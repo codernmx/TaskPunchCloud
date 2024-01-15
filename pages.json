@@ -1,0 +1,73 @@
+{
+	"easycom": {
+		// 注意一定要放在custom里，否则无效，https://ask.dcloud.net.cn/question/131175
+		"custom": {
+			"^u--(.*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
+			"^up-(.*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
+			"^u-([^-].*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue"
+		}
+	},
+	"tabBar": {
+		"color": "#909399",
+		"selectedColor": "#303133",
+		"backgroundColor": "#FFFFFF",
+		"borderStyle": "black",
+		"list": [{
+				"pagePath": "pages/home/home",
+				"iconPath": "static/icon/home.png",
+				"selectedIconPath": "static/icon/home_a.png",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/task/task",
+				"iconPath": "static/icon/task.png",
+				"selectedIconPath": "static/icon/task_a.png",
+				"text": "任务"
+			},
+			{
+				"pagePath": "pages/me/me",
+				"iconPath": "static/icon/me.png",
+				"selectedIconPath": "static/icon/me_a.png",
+				"text": "我的"
+			}
+		]
+	},
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/start/start",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/webview"
+		},
+		{
+			"path": "pages/home/home",
+			"style": {
+				"navigationBarTitleText": "绿美仙塘"
+			}
+		},
+
+		{
+			"path": "pages/task/task",
+			"style": {
+				"navigationBarTitleText": "任务云",
+				"disableScroll": true
+			}
+		},
+		{
+			"path": "pages/me/me",
+			"style": {
+				"navigationBarTitleText": "个人中心"
+			}
+		}
+	],
+	"subPackages": [],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "任务云",
+		"navigationBarBackgroundColor": "#F24643",
+		"backgroundColor": "#FFFFFF"
+	}
+}

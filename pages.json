@@ -57,6 +57,12 @@
 			}
 		},
 		{
+			"path": "pages/task/task-add-edit",
+			"style": {
+				"navigationBarTitleText": "任务信息"
+			}
+		},
+		{
 			"path": "pages/me/me",
 			"style": {
 				"navigationBarTitleText": "个人中心"

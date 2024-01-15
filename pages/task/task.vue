@@ -14,7 +14,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="d-flex align-items-center direction-column mt-60">
+			<view class="d-flex align-items-center direction-column mt-60" @click="toAddEdit">
 				<image src="/static/daka.png" style="width: 270rpx;height: 270rpx"></image>
 				<view class="white" style="margin-top: -130rpx">开始打卡</view>
 			</view>
@@ -47,7 +47,11 @@ const getStatistics = async () => {
 		console.log (err);
 	}
 };
-
+const toAddEdit = () => {
+	uni.navigateTo ({
+		url: '/pages/task/task-add-edit'
+	})
+}
 // 下拉刷新
 onPullDownRefresh (() => {
 });

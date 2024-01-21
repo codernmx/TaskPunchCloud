@@ -2,29 +2,29 @@
 import { useUserStore } from '@/store/index';
 export default {
 	onLaunch: function () {
-		uni.login({
-			provider: 'weixin',
-			onlyAuthorize: true, // 微信登录仅请求授权认证
-			success: async ({ code }) => {
-				uni.showLoading({
-					mask:true,
-					title:'加载中'
-				})
-				const res = await uni.$u.http.post('/api/weapp/login', { code });
-				const userStore = useUserStore();
-				userStore.userInfo = res.data;
-				userStore.token = res.data.token;
-				console.log(userStore, 'userStore');
-				uni.setStorageSync('userInfo', res.data);
-				uni.setStorageSync('token', res.data.token);
-				uni.hideLoading()
-			},
-			fail: (err) => {
-				console.log(err, 'err------------------>');
-				uni.$u.toast(err.errMsg);
-			},
-			complete() {}
-		});
+		// uni.login({
+		// 	provider: 'weixin',
+		// 	onlyAuthorize: true, // 微信登录仅请求授权认证
+		// 	success: async ({ code }) => {
+		// 		uni.showLoading({
+		// 			mask:true,
+		// 			title:'加载中'
+		// 		})
+		// 		const res = await uni.$u.http.post('/api/weapp/login', { code });
+		// 		const userStore = useUserStore();
+		// 		userStore.userInfo = res.data;
+		// 		userStore.token = res.data.token;
+		// 		console.log(userStore, 'userStore');
+		// 		uni.setStorageSync('userInfo', res.data);
+		// 		uni.setStorageSync('token', res.data.token);
+		// 		uni.hideLoading()
+		// 	},
+		// 	fail: (err) => {
+		// 		console.log(err, 'err------------------>');
+		// 		uni.$u.toast(err.errMsg);
+		// 	},
+		// 	complete() {}
+		// });
 	},
 	onShow: function (options) {
 		console.log('App Show--->', options);

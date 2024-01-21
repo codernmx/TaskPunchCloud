@@ -37,16 +37,7 @@ const dataVal = reactive ({
 });
 
 
-const getStatistics = async () => {
-	try {
-		const res = await uni.$u.http.post ('/api/activity/statistics/my', {
-			userId: uni.getStorageSync ('userInfo').userId
-		});
-		dataVal.total = res.data;
-	} catch (err) {
-		console.log (err);
-	}
-};
+
 const toAddEdit = () => {
 	uni.navigateTo ({
 		url: '/pages/task/task-add-edit'

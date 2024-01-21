@@ -37,7 +37,7 @@ const responseInterceptors = (vm) => {
 		if (data.code !== 200) { // 服务端返回的状态码不等于200，则reject()
 			// 如果没有显式定义custom的toast参数为false的话，默认对报错进行toast弹出提示
 			if (custom.toast !== false) {
-				uni.$u.toast(data.msg)
+				uni.$u.toast(data.message)
 			}
 			// 如果需要catch返回，则进行reject
 			if (custom?.catch) {

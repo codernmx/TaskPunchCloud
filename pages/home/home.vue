@@ -1,14 +1,25 @@
 <template>
-	<image src="/static/home_bg.png" style="width: 100%;height: 600rpx"></image>
+	<view>
+		<image src="/static/home_bg.png" style="width: 100%; height: 600rpx"></image>
+		<view class="team-choose">
+			<view v-for="(item, i) in dataVal.team" :key="i" :class="{ active: dataVal.active === item.index, item: true }" @click="tamChange(item)">
+				{{ item.name }}
+			</view>
+		</view>
+	</view>
 	<view class="container">
 		<view class="box">
-			<view v-for="(item,i) in dataVal.tableList" :key="i" class="d-flex space-between mb-2">
+			<view v-for="(item, i) in dataVal.tableList" :key="i" class="d-flex space-between mb-2">
 				<view class="d-flex align-items-center">
-					<view class="index">{{ item.index }}</view>
-					<image src="/static/head.png" style="height: 80rpx;width: 80rpx;margin: 0 20rpx"></image>
-					<view>{{ item.name }}</view>
+					<view class="index">{{ i+1 }}</view>
+					<image src="/static/head.png" style="height: 80rpx; width: 80rpx; margin: 0 20rpx"></image>
+					<view>{{ item.username }}</view>
 				</view>
-				<view>{{ item.score }}</view>
+				<view>{{ dataVal.active===1?item.taskNum:item.taskNum }}</view>
+			</view>
+			<view class="d-flex space-between mt-2 size-24 pl-1" @click="more">
+				查看更多
+				<u-icon name="arrow-right" size="18"></u-icon>
 			</view>
 		</view>
 	</view>
@@ -19,68 +30,86 @@ import { reactive, computed, ref, onMounted, getCurrentInstance } from 'vue';
 import { onLoad, onShow, onPullDownRefresh } from '@dcloudio/uni-app';
 import { useUserStore } from '@/store/index';
 
-const userStore = useUserStore ();
+const userStore = useUserStore();
 import config from '@/common/config';
 
 const baseUrl = config.baseUrl;
 
-const dataVal = reactive ({
-	tableList: [
+const dataVal = reactive({
+	tableList: [],
+	team: [
 		{
 			index: 1,
-			name: '雷子',
+			name: '个人榜',
 			score: 232
 		},
 		{
-			index: 1,
-			name: '雷子2',
+			index: 2,
+			name: '团队榜',
 			score: 220
-		},
-		{
-			index: 1,
-			name: '雷子2',
-			score: 199
-		},
-		{
-			index: 1,
-			name: '雷子2',
-			score: 8
-		},
-		{
-			index: 1,
-			name: '雷子2',
-			score: 0
 		}
-	]
+	],
+	active: 1
 });
 
-
-const getStatistics = async () => {
+const getList = async () => {
 	try {
-		const res = await uni.$u.http.post ('/api/activity/statistics/my', {
-			userId: uni.getStorageSync ('userInfo').userId
+		const res = await uni.$u.http.post('/api/user/task_user_rank', {
+			userId: uni.getStorageSync('userInfo').userId,
+			type:'taskNum'
 		});
-		dataVal.total = res.data;
+		dataVal.tableList = res.data.list;
 	} catch (err) {
-		console.log (err);
+		console.log(err);
 	}
 };
 
+const tamChange = (item) => {
+	dataVal.active = item.index;
+	console.log(dataVal.active,'dataVal.active')
+};
 // 下拉刷新
-onPullDownRefresh (() => {
-});
+onPullDownRefresh(() => {});
 
-onShow (() => {
-
-});
-onLoad ((option) => {
+onShow(() => {});
+onLoad((option) => {
+	getList()
 });
 </script>
 
 <style lang="less" scoped>
+.team-choose {
+	width: calc(100% - 92px);
+	border-radius: 79px;
+	height: 36px;
+	margin: -150px 46px 115px 46px;
+	//margin: 0 46px;
+	//background: rgba(255, 30, 30, 0.35);
+	background: black;
+	display: flex;
+
+	.active {
+		color: #ff3e3e !important;
+		background: #ffffff;
+		font-weight: 600 !important;
+	}
+
+	.item {
+		width: 50%;
+		height: 100%;
+		border-radius: 79px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 16px;
+		font-family: PingFang SC, PingFang SC;
+		font-weight: 400;
+		color: #ffffff;
+	}
+}
 
 .container {
-	background: #F5F5F5;
+	background: #f5f5f5;
 	min-height: 90vh;
 	padding: 0 20rpx;
 
@@ -90,12 +119,12 @@ onLoad ((option) => {
 		margin-top: -30rpx;
 		padding: 20rpx;
 		border-radius: 20rpx;
-		background: linear-gradient(180deg, #FFD5BE 0%, rgba(255, 255, 255, 0) 100%);
+		background: linear-gradient(180deg, #ffd5be 0%, rgba(255, 255, 255, 0) 100%);
 
 		.index {
 			width: 38rpx;
 			height: 38rpx;
-			background: #FFFFFF;
+			background: #ffffff;
 			border-radius: 50%;
 			text-align: center;
 			font-size: 26rpx;

@@ -1,6 +1,6 @@
 <template>
 	<view style="height: 45rpx"></view>
-	<view class="d-flex align-items-center space-between">
+	<view class="d-flex align-items-center space-between" @click="click">
 		<view class="d-flex align-items-center">
 			<image :src="icon" style="width: 56rpx;height: 56rpx" class="mr-2"></image>
 			{{name}}
@@ -27,9 +27,9 @@ const props = defineProps ({
 		required: true
 	}
 });
-// const click =()=>{
-// 	emit('click')
-// }
+const click =()=>{
+	emit('click')
+}
 // 下拉刷新
 onPullDownRefresh (() => {
 });

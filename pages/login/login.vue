@@ -14,6 +14,20 @@
 				v-model="dataVal.form.repassword"
 				custom-style="margin-top:30rpx;background:#ffffff"
 			></up-input>
+			<up-input
+				v-if="register"
+				placeholder="请输入手机号"
+				border="surround"
+				v-model="dataVal.form.phone"
+				custom-style="margin-top:30rpx;background:#ffffff"
+			></up-input>
+			<up-input
+				v-if="register"
+				placeholder="请输入真实姓名"
+				border="surround"
+				v-model="dataVal.form.realName"
+				custom-style="margin-top:30rpx;background:#ffffff"
+			></up-input>
 			<up-button type="error" @click="$u.debounce(login, 700)" :text="!register ? '登录' : '注册'" custom-style="margin-top:30rpx;"></up-button>
 			<view class="mt-2" @click="register = !register">{{ !register ? '去注册' : '去登录' }}</view>
 		</view>

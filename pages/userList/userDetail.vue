@@ -26,6 +26,20 @@ const scrolltolower = () => {
 const loadmore = () => {
 	console.log('more');
 };
+
+const zanAndShare = async (clockId, type) => {
+	let url = type === 1 ? '/api/user/share' : '/api/user/zan';
+	const res = await uni.$u.http.post(url, {
+		userId: uni.getStorageSync('userInfo').userId,
+		clockId
+	});
+	if (res.code === 200) {
+		uni.$u.toast('操作成功');
+		setTimeout(() => {
+			getList();
+		}, 1200);
+	}
+};
 const getList = async () => {
 	try {
 		const res = await uni.$u.http.post('/api/user/task_list', {
@@ -85,13 +99,13 @@ getList();
 					</view>
 					<view class="bottom size-26">
 						<view class="bottom-item">
-							<view class="t-title d-flex align-items-center">
+							<view class="t-title d-flex align-items-center" @click="zanAndShare(item.clockId, 1)">
 								<u-icon name="share" size="20"></u-icon>
 								{{ item.shareNum }}
 							</view>
 						</view>
 						<view class="bottom-item">
-							<view class="t-title d-flex align-items-center">
+							<view class="t-title d-flex align-items-center" @click="zanAndShare(item.clockId, 2)">
 								<u-icon name="thumb-up" size="20"></u-icon>
 								{{ item.zanNum }}
 							</view>

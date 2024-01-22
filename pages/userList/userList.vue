@@ -2,28 +2,18 @@
 import { ref } from 'vue';
 
 const indexList = ref([]);
-const urls = ref([
-	'https://cdn.uviewui.com/uview/album/1.jpg',
-	'https://cdn.uviewui.com/uview/album/2.jpg',
-	'https://cdn.uviewui.com/uview/album/3.jpg',
-	'https://cdn.uviewui.com/uview/album/4.jpg',
-	'https://cdn.uviewui.com/uview/album/5.jpg',
-	'https://cdn.uviewui.com/uview/album/6.jpg',
-	'https://cdn.uviewui.com/uview/album/7.jpg',
-	'https://cdn.uviewui.com/uview/album/8.jpg',
-	'https://cdn.uviewui.com/uview/album/9.jpg',
-	'https://cdn.uviewui.com/uview/album/10.jpg'
-]);
 
 const scrolltolower = () => {
 	loadmore();
 };
-
-const loadmore = () => {
-	for (let i = 0; i < 30; i++) {
-		indexList.value.push({
-			url: urls.value[uni.$u.random(0, urls.value.length - 1)]
+const getList = async () => {
+	try {
+		const res = await uni.$u.http.post('/api/user/user_list', {
+			teamId: uni.getStorageSync('userInfo').teamId
 		});
+		indexList.value = res.data.list
+	} catch (err) {
+		console.log(err);
 	}
 };
 const toDetail = () => {
@@ -31,15 +21,16 @@ const toDetail = () => {
 		url: '/pages/userList/userDetail'
 	});
 };
-loadmore();
+// loadmore();
+getList();
 </script>
 
 <template>
 	<view class="u-page">
 		<u-list @scrolltolower="scrolltolower">
 			<u-list-item v-for="(item, index) in indexList" :key="index">
-				<view class="item-list"  @click="toDetail">
-					<u-cell :title="`列表长度-${index + 1}`">
+				<view class="item-list" @click="toDetail">
+					<u-cell :title="item.realName">
 						<template #icon>
 							<u-avatar shape="circle" size="35" :src="item.url" customStyle="margin: -3px 5px -3px 0"></u-avatar>
 						</template>

@@ -35,10 +35,30 @@
 					<up-button type="error" text="打卡" @click="$u.debounce(submit, 700)"></up-button>
 				</u-form-item>
 			</u--form>
-			<u-action-sheet :show="showSex" :actions="actions" title="打卡任务类型" @close="showSex = false"></u-action-sheet>
+			<u-action-sheet
+				:show="showSex"
+				:actions="actions"
+				title="打卡任务类型"
+				@select="
+					(val) => {
+						selectType(val, 'type');
+					}
+				"
+				@close="showSex = false"
+			></u-action-sheet>
 
 			<!-- 共同参与者 -->
-			<u-action-sheet :show="showGt" :actions="actionsGtAc" title="共同参与者" @close="showGt = false"></u-action-sheet>
+			<u-action-sheet
+				:show="showGt"
+				:actions="actionsGtAc"
+				title="共同参与者"
+				@select="
+					(val) => {
+						selectType(val, 'participant');
+					}
+				"
+				@close="showGt = false"
+			></u-action-sheet>
 		</view>
 	</view>
 </template>
@@ -57,36 +77,16 @@ const showGt = ref(false);
 const form = reactive({
 	userInfo: {
 		location: '重庆市渝中区戴家巷渝中区',
-		detail: '任务详情12',
-		participant: uni.getStorageSync('userInfo').userId, //多个逗号分割
+		detail: '', //任务详情
+		participant: null, //多个逗号分割
 		status: 1,
 		completeTime: formatDate(new Date()), //完成时间
-		type: 1 //任务类别
+		type: null //任务类别
 	}
 });
 
-const actions = [
-	{
-		name: '任务一'
-	},
-	{
-		name: '任务二'
-	},
-	{
-		name: '任务三'
-	}
-];
-const actionsGtAc = [
-	{
-		name: '共同参与者1'
-	},
-	{
-		name: '共同参与者2'
-	},
-	{
-		name: '共同参与者3'
-	}
-];
+const actions = ref([]);
+const actionsGtAc = ref([]);
 
 const rules = {
 	'userInfo.name': {
@@ -157,6 +157,9 @@ const uploadFilePromise = (url) => {
 	});
 };
 
+const selectType = (val, key) => {
+	form.userInfo[key] = val.name;
+};
 const getStatistics = async () => {
 	try {
 		const res = await uni.$u.http.post('/api/activity/statistics/my', {
@@ -168,12 +171,22 @@ const getStatistics = async () => {
 	}
 };
 const submit = async () => {
-	console.log(fileList.value);
+	const { type, participant, detail, location } = form.userInfo;
+	if (!location || !detail || !type) {
+		uni.$u.toast('请输入完整内容');
+		return;
+	}
 	const imgList = fileList.value.map((item) => {
 		return item.url;
 	});
+	if (imgList.length < 1) {
+		uni.$u.toast('请上传文件');
+		return;
+	}
+	const str = form.userInfo.participant + ',' + uni.getStorageSync('userInfo').userId;
 	const res = await uni.$u.http.post('/api/user/add_task', {
 		...form.userInfo,
+		participant: form.userInfo.participant ? str : uni.getStorageSync('userInfo').userId,
 		img: JSON.stringify(imgList)
 	});
 	if (res.code === 200) {
@@ -195,12 +208,38 @@ const chooseAddress = () => {
 		},
 		fail: (err) => {
 			console.log(err);
+			uni.$u.toast('获取位置权限失败，请关注隐私协议');
 		}
 	});
 };
+const init = async () => {
+	try {
+		const typeList = uni.$u.http.post('/api/user/type_list', {});
+		const joinList = uni.$u.http.post('/api/user/user_list', {
+			teamId: uni.getStorageSync('userInfo').userId,
+			page: 1,
+			pageSize: 100
+		});
+		const [type, join] = await Promise.all([typeList, joinList]);
+		console.log(type.data.list);
+		console.log(join.data.list);
+		actions.value = type.data.list.map((item) => {
+			return {
+				name: item.taskName
+			};
+		});
+		actionsGtAc.value = join.data.list.map((item) => {
+			return {
+				name: item.realName
+			};
+		});
+	} catch (err) {
+		console.log(err);
+	}
+};
 // 下拉刷新
 onPullDownRefresh(() => {});
-
+init();
 onShow(() => {});
 onLoad((option) => {});
 </script>

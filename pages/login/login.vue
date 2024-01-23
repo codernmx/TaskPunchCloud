@@ -1,7 +1,7 @@
 <template>
-	<view class="container position-relative p-2">
-		<view class="position-absolute logo">logo</view>
-		<image src="/static/task_bg.png" mode="aspectFill" style="width: 100%; height: 100%; position: absolute; margin-left: -20rpx; margin-top: -20rpx"></image>
+	<view class="container position-relative" style="padding: 0 60rpx">
+		<view class="position-absolute logo"></view>
+		<image src="/static/bg.jpg" mode="heightFix" style="opacity: 0.6; width: 100%; height: 100%; position: absolute; margin-left: -60rpx"></image>
 		<view class="position-absolute login-form">
 			<up-input placeholder="请输入账号" border="surround" v-model="dataVal.form.username" custom-style="background:#ffffff"></up-input>
 			<up-input placeholder="请输入密码" border="surround" password clearable v-model="dataVal.form.password" custom-style="margin-top:30rpx;background:#ffffff"></up-input>
@@ -14,22 +14,10 @@
 				v-model="dataVal.form.repassword"
 				custom-style="margin-top:30rpx;background:#ffffff"
 			></up-input>
-			<up-input
-				v-if="register"
-				placeholder="请输入手机号"
-				border="surround"
-				v-model="dataVal.form.phone"
-				custom-style="margin-top:30rpx;background:#ffffff"
-			></up-input>
-			<up-input
-				v-if="register"
-				placeholder="请输入真实姓名"
-				border="surround"
-				v-model="dataVal.form.realName"
-				custom-style="margin-top:30rpx;background:#ffffff"
-			></up-input>
+			<up-input v-if="register" placeholder="请输入手机号" border="surround" v-model="dataVal.form.phone" custom-style="margin-top:30rpx;background:#ffffff"></up-input>
+			<up-input v-if="register" placeholder="请输入真实姓名" border="surround" v-model="dataVal.form.realName" custom-style="margin-top:30rpx;background:#ffffff"></up-input>
 			<up-button type="error" @click="$u.debounce(login, 700)" :text="!register ? '登录' : '注册'" custom-style="margin-top:30rpx;"></up-button>
-			<view class="mt-2" @click="register = !register">{{ !register ? '去注册' : '去登录' }}</view>
+			<view class="mt-2" style="text-align: right" @click="register = !register">{{ !register ? '去注册' : '去登录' }}</view>
 		</view>
 	</view>
 </template>
@@ -55,7 +43,7 @@ onLoad((option) => {});
 const toHome = () => {};
 
 const login = () => {
-	const { username, password, repassword } = dataVal.form;
+	const { username, password, repassword, phone, realName } = dataVal.form;
 	if (!username || !password) {
 		uni.$u.toast('请输入账号密码');
 		return;
@@ -63,6 +51,10 @@ const login = () => {
 	if (register.value) {
 		if (!repassword || password != repassword) {
 			uni.$u.toast('输入密码不一致');
+			return;
+		}
+		if (!phone || !realName) {
+			uni.$u.toast('输入手机号和真实姓名');
 			return;
 		}
 	}
@@ -86,7 +78,7 @@ const login = () => {
 			}
 			if (!register.value && res.code === 200) {
 				uni.$u.toast('登录成功');
-				userStore.userInfo = res.data;
+				userStore.userInfo = res.data.userInfo;
 				userStore.token = res.data.token;
 				uni.setStorageSync('userInfo', res.data.userInfo);
 				uni.setStorageSync('token', res.data.token);
@@ -110,10 +102,11 @@ const login = () => {
 
 <style lang="less" scoped>
 .container {
-	height: calc(100vh - 20rpx);
+	height: 100vh;
+	overflow: hidden;
 	.login-form {
 		top: 40%;
-		width: calc(100% - 40rpx);
+		width: calc(100% - 120rpx);
 	}
 	.logo {
 		top: 30%;

@@ -1,6 +1,8 @@
 <script setup>
 import { ref, reactive } from 'vue';
-
+import { onLoad, onShow, onPullDownRefresh } from '@dcloudio/uni-app';
+import { useUserStore } from '@/store/index';
+const userStore = useUserStore();
 const indexList = ref([]);
 const dataVal = reactive({
 	info: {
@@ -12,7 +14,7 @@ const dataVal = reactive({
 		list: []
 	}
 });
-
+const userId = ref('')
 const bottomList = ref([
 	{ src: '', value: 88 },
 	{ src: '', value: 88 }
@@ -43,7 +45,7 @@ const zanAndShare = async (clockId, type) => {
 const getList = async () => {
 	try {
 		const res = await uni.$u.http.post('/api/user/task_list', {
-			userId: uni.getStorageSync('userInfo').userId
+			userId: userId.value
 		});
 		dataVal.info = res.data;
 		console.log(res.data, 'res.data');
@@ -52,7 +54,10 @@ const getList = async () => {
 	}
 };
 loadmore();
-getList();
+onLoad((options) => {
+	userId.value = options.userId ? options.userId : uni.getStorageSync('userInfo').userId;
+	getList();
+});
 </script>
 
 <template>
@@ -66,8 +71,8 @@ getList();
 						<view style="margin-left: 20px">
 							<up-avatar src="" shape="square"></up-avatar>
 						</view>
-						<view class="name">张三</view>
-						<view class="type">用户组1</view>
+						<view class="name">{{userStore.userInfo.realName||'暂未设置'}}</view>
+						<view class="type">{{userStore.userInfo.teamName||'暂未设置'}}</view>
 					</view>
 					<view class="bottom">
 						<view class="bottom-item">

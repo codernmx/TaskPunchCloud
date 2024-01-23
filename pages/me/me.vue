@@ -2,10 +2,10 @@
 	<view style="height: 330rpx" class="position-relative d-flex align-items-center">
 		<image src="/static/me_bg.png" style="width: 100%; height: 330rpx" class="position-absolute"></image>
 		<view class="head white align-items-center pl-3">
-			<image src="/static/head.png" style="width: 120rpx; height: 120rpx; border-radius: 50%"></image>
+			<image src="/static/head.png" style="width: 120rpx; height: 120rpx; border-radius: 50%" @click="changeHead"></image>
 			<view class="ml-4">
-				<view class="size-40">张三</view>
-				<view class="mt-1">19923756596</view>
+				<view class="size-40">{{ userStore.userInfo.realName || '暂未设置' }}</view>
+				<view class="mt-1">{{ userStore.userInfo.phone || '暂未设置' }}</view>
 			</view>
 		</view>
 	</view>
@@ -24,7 +24,7 @@
 		<view class="more mt-3 p-2">
 			<view class="text-bold">更多功能</view>
 
-			<MeLink name="团队成员" icon="/static/team.png" @click="toTeam"/>
+			<MeLink name="团队成员" icon="/static/team.png" @click="toTeam" />
 			<MeLink name="帮助中心" icon="/static/bz.png" />
 			<MeLink name="帮助与反馈" icon="/static/bzhu.png" />
 		</view>
@@ -58,6 +58,9 @@ const toTeam = () => {
 	uni.navigateTo({
 		url: '/pages/userList/userList'
 	});
+};
+const changeHead = () => {
+	uni.$u.toast('暂无选择文件权限');
 };
 const dataVal = reactive({
 	userInfo: {}
@@ -103,7 +106,7 @@ const getStatistics = async () => {
 };
 
 const loginOut = () => {
-	uni.clearStorageSync()
+	uni.clearStorageSync();
 	console.log(1);
 	uni.redirectTo({
 		url: '/pages/login/login'

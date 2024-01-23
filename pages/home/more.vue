@@ -13,9 +13,13 @@
 				<view class="d-flex align-items-center">
 					<view class="index">{{ i + 1 }}</view>
 					<image src="/static/head.png" style="height: 80rpx; width: 80rpx; margin: 0 20rpx"></image>
-					<view>{{ dataVal.active === 1 ? item.realName : item.teamName }}</view>
+					<view>{{ item.teamName }}</view>
 				</view>
-				<view>{{ dataVal.active === 1 ? item.taskNum : item.total }}</view>
+				<view>
+					<text v-if="dataVal.active === 1">{{item.dayNum}}</text>
+					<text v-if="dataVal.active === 2">{{item.weekNum}}</text>
+					<text v-if="dataVal.active === 3">{{item.taskNum}}</text>
+				</view>
 			</view>
 			<view class="d-flex space-between mt-2 size-24 pl-1" @click="more">
 				查看更多
@@ -40,12 +44,17 @@ const dataVal = reactive({
 	team: [
 		{
 			index: 1,
-			name: '个人榜',
+			name: '日榜',
 			score: 232
 		},
 		{
 			index: 2,
-			name: '团队榜',
+			name: '周榜',
+			score: 220
+		},
+		{
+			index: 3,
+			name: '总榜',
 			score: 220
 		}
 	],
@@ -54,20 +63,23 @@ const dataVal = reactive({
 
 const getList = async () => {
 	try {
+		let type = null;
+		if (dataVal.active === 1) {
+			type = 'dayNum';
+		} else if (dataVal.active === 2) {
+			type = 'weekNum';
+		} else {
+			type = 'taskNum';
+		}
 		const res = await uni.$u.http.post('/api/user/task_user_rank', {
 			userId: uni.getStorageSync('userInfo').userId,
-			type: 'taskNum'
+			type
 		});
 		dataVal.tableList = res.data.list;
 	} catch (err) {
 		console.log(err);
 	}
 };
-const more = ()=>{
-	uni.navigateTo({
-		url:'/pages/home/more'
-	})
-}
 const getTeamList = async () => {
 	try {
 		const res = await uni.$u.http.post('/api/user/task_group_rank', {});
@@ -79,10 +91,7 @@ const getTeamList = async () => {
 
 const tamChange = (item) => {
 	dataVal.active = item.index;
-	console.log(dataVal.active, 'dataVal.active');
-	if (dataVal.active === 2) {
-		getTeamList();
-	}
+	getList();
 };
 // 下拉刷新
 onPullDownRefresh(() => {});

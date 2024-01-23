@@ -48,6 +48,12 @@
 				"navigationBarTitleText": "任务云"
 			}
 		},
+		{
+			"path": "pages/home/more",
+			"style": {
+				"navigationBarTitleText": "任务云"
+			}
+		},
 
 		{
 			"path": "pages/task/task",

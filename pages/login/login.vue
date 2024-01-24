@@ -14,6 +14,16 @@
 				v-model="dataVal.form.repassword"
 				custom-style="margin-top:30rpx;background:#ffffff"
 			></up-input>
+			<view v-if="register" style="height: 30rpx"></view>
+			<uni-combox
+				v-if="register"
+				@input="changeCompany"
+				:candidates="dataVal.comanyLable"
+				placeholder="请选择团队"
+				v-model="dataVal.form.campusName"
+				@empty="empty"
+			></uni-combox>
+
 			<up-input v-if="register" placeholder="请输入手机号" border="surround" v-model="dataVal.form.phone" custom-style="margin-top:30rpx;background:#ffffff"></up-input>
 			<up-input v-if="register" placeholder="请输入真实姓名" border="surround" v-model="dataVal.form.realName" custom-style="margin-top:30rpx;background:#ffffff"></up-input>
 			<up-button type="error" @click="$u.debounce(login, 700)" :text="!register ? '登录' : '注册'" custom-style="margin-top:30rpx;"></up-button>
@@ -29,7 +39,8 @@ import { useUserStore } from '@/store/index';
 const userStore = useUserStore();
 
 const dataVal = reactive({
-	form: {}
+	form: {},
+	comanyLable: []
 });
 const register = ref(false);
 onShow(() => {
@@ -39,9 +50,32 @@ onShow(() => {
 		});
 	}
 });
-onLoad((option) => {});
-const toHome = () => {};
+const empty = () => {};
+const changeCompany = (val) => {
+	const obj = dataVal.comanyLableAll.find((item) => item.teamName == val);
+	if (!obj) {
+		return;
+	}
+	dataVal.form.teamId = obj.teamId;
+	dataVal.form.teamName = obj.teamName;
+	console.log(dataVal.form);
+};
 
+const getTeamList = async () => {
+	try {
+		const res = await uni.$u.http.post('/api/user/group_list', {});
+		dataVal.comanyLableAll = res.data.list;
+		dataVal.comanyLable = res.data.list.map((item) => {
+			return item.teamName;
+		});
+	} catch (err) {
+		console.log(err);
+	}
+};
+
+onLoad((option) => {});
+
+getTeamList();
 const login = () => {
 	const { username, password, repassword, phone, realName } = dataVal.form;
 	if (!username || !password) {
@@ -105,7 +139,7 @@ const login = () => {
 	height: 100vh;
 	overflow: hidden;
 	.login-form {
-		top: 40%;
+		top: 20%;
 		width: calc(100% - 120rpx);
 	}
 	.logo {

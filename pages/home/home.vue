@@ -1,6 +1,7 @@
 <template>
 	<view>
-		<image src="/static/home_bg.png" style="width: 100%; height: 600rpx"></image>
+		<image v-if="dataVal.active === 1" src="/static/home_bg.png" style="width: 100%; height: 600rpx"></image>
+		<image v-else src="/static/td.png" style="width: 100%; height: 600rpx"></image>
 		<view class="team-choose">
 			<view v-for="(item, i) in dataVal.team" :key="i" :class="{ active: dataVal.active === item.index, item: true }" @click="tamChange(item)">
 				{{ item.name }}
@@ -10,7 +11,7 @@
 	<view class="container">
 		<view class="box">
 			<view v-for="(item, i) in dataVal.tableList" :key="i" class="d-flex space-between mb-2">
-				<view class="d-flex align-items-center">
+				<view class="d-flex align-items-center" @click="toDetail(item)">
 					<view class="index">{{ i + 1 }}</view>
 					<image src="/static/head.png" style="height: 80rpx; width: 80rpx; margin: 0 20rpx"></image>
 					<view>{{ dataVal.active === 1 ? item.realName : item.teamName }}</view>
@@ -63,11 +64,21 @@ const getList = async () => {
 		console.log(err);
 	}
 };
-const more = ()=>{
+
+const toDetail = (item) => {
+	if (item.userId) {
+		uni.navigateTo({
+			url: '/pages/userList/userDetail?userId=' + item.userId
+		});
+	} else {
+		uni.$u.toast('团队暂不支持');
+	}
+};
+const more = () => {
 	uni.navigateTo({
-		url:'/pages/home/more'
-	})
-}
+		url: '/pages/home/more'
+	});
+};
 const getTeamList = async () => {
 	try {
 		const res = await uni.$u.http.post('/api/user/task_group_rank', {});
@@ -82,6 +93,8 @@ const tamChange = (item) => {
 	console.log(dataVal.active, 'dataVal.active');
 	if (dataVal.active === 2) {
 		getTeamList();
+	}else{
+		getList();
 	}
 };
 // 下拉刷新

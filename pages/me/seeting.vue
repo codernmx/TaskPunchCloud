@@ -1,48 +1,7 @@
 <template>
-	<view style="height: 330rpx" class="position-relative d-flex align-items-center">
-		<image src="/static/me_bg.png" style="width: 100%; height: 330rpx" class="position-absolute"></image>
-
-		<view class="head white align-items-center pl-3">
-			<button
-				class="avatar-button"
-				open-type="chooseAvatar"
-				@chooseavatar="onChooseAvatar"
-				style="background: pink; border: none; width: 120rpx; height: 120rpx; border-radius: 50%; padding: 0"
-			>
-				<image style="width: 120rpx; height: 120rpx; border-radius: 50%" :src="userStore.userInfo.avatarUrl"></image>
-			</button>
-			<!-- <image src="/static/head.png" style="width: 120rpx; height: 120rpx; border-radius: 50%" @click="changeHead"></image> -->
-			<view class="ml-4">
-				<view class="size-40">{{ userStore.userInfo.realName || '暂未设置' }}</view>
-				<view class="mt-1">{{ userStore.userInfo.phone || '暂未设置' }}</view>
-			</view>
-		</view>
-	</view>
 	<view class="container">
-		<view class="task d-flex space-between" style="position: relative; z-index: 6; margin-top: -60rpx">
-			<view class="d-flex direction-column align-items-center" @click="toTask(1)">
-				<image src="/static/me.png" style="width: 68rpx; height: 68rpx"></image>
-				我的任务
-			</view>
-			<view class="d-flex direction-column align-items-center" @click="toTask(2)">
-				<image src="/static/not-pass.png" style="width: 68rpx; height: 68rpx"></image>
-				未通过任务
-			</view>
-		</view>
-
-		<view class="more mt-3 p-2">
-			<view class="text-bold">更多功能</view>
-
-			<MeLink name="团队成员" icon="/static/team.png" @click="toTeam" />
-			<MeLink name="帮助中心" icon="/static/bz.png" />
-			<MeLink name="帮助与反馈" icon="/static/bzhu.png" />
-		</view>
-
-		<view class="other mt-3 p-2">
-			<view class="text-bold">其他</view>
-			<MeLink name="设置" icon="/static/seeting.png" @click="toSeeting" />
-			<MeLink name="退出登录" icon="/static/out.png" @click="loginOut" />
-		</view>
+		<up-input placeholder="请输入新密码" custom-style="margin-top:30rpx" border="surround" v-model="value"></up-input>
+		<u-button text="提交" @click="$u.debounce(submit, 700)" type="error" custom-style="margin-top:30rpx"></u-button>
 	</view>
 </template>
 
@@ -58,6 +17,31 @@ import config from '@/common/config';
 
 const baseUrl = config.baseUrl;
 
+const value = ref('');
+const submit = async () => {
+	if (!value.value) {
+		uni.$u.toast('请输入新密码');
+		return;
+	}
+
+	uni.$u.http
+		.post('/api/user/update_user', {
+			...userStore.userInfo,
+			password: value.value
+		})
+		.then((result) => {
+			if (result.code === 200) {
+				uni.$u.toast('修改成功');
+				setTimeout(() => {
+					uni.switchTab({
+						url: '/pages/me/me'
+					});
+				}, 1500);
+			}
+			console.log(result);
+		});
+};
+
 const toTask = (type) => {
 	let url = '/pages/userList/userDetail';
 	if (type === 2) {
@@ -70,11 +54,6 @@ const toTask = (type) => {
 const toTeam = () => {
 	uni.navigateTo({
 		url: '/pages/userList/userList'
-	});
-};
-const toSeeting = () => {
-	uni.navigateTo({
-		url: '/pages/me/seeting'
 	});
 };
 const changeHead = () => {

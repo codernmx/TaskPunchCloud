@@ -29,7 +29,7 @@
 					<u--textarea v-model="form.userInfo.detail" placeholder="请输入内容"></u--textarea>
 				</u-form-item>
 				<u-form-item label="定位" prop="userInfo.address" borderBottom ref="item1" @click="chooseAddress">
-					<view style="width: 100%; margin-bottom: 10px; font-size: 15px">{{ form.userInfo.location }}</view>
+					<view style="width: 100%; font-size: 15px">{{ form.userInfo.location }}</view>
 				</u-form-item>
 				<u-form-item>
 					<up-button type="error" text="打卡" @click="$u.debounce(submit, 700)"></up-button>
@@ -76,7 +76,7 @@ const showSex = ref(false);
 const showGt = ref(false);
 const form = reactive({
 	userInfo: {
-		location: '重庆市渝中区戴家巷渝中区',
+		location: '',
 		detail: '', //任务详情
 		participant: null, //多个逗号分割
 		status: 1,
@@ -104,7 +104,8 @@ const rules = {
 	}
 };
 const dataVal = reactive({
-	userInfo: {}
+	userInfo: {},
+	startAddress: {}
 });
 const fileList = ref([]);
 
@@ -205,10 +206,18 @@ const chooseAddress = () => {
 			console.log('详细地址：' + res.address);
 			console.log('纬度：' + res.latitude);
 			console.log('经度：' + res.longitude);
+
+			// const distance = calcCoordsDistance(dataVal.startAddress, res);
+			// console.log(dataVal.startAddress, res);
+			// console.log(distance, 'distance');
+			// if (distance.originVal > 300) {
+			// 	uni.$u.toast('请选择300米内位置');
+			// } else {
+			form.userInfo.location = res.name;
+			// }
 		},
 		fail: (err) => {
 			console.log(err);
-			uni.$u.toast('获取位置权限失败，请关注隐私协议');
 		}
 	});
 };
@@ -241,7 +250,20 @@ const init = async () => {
 onPullDownRefresh(() => {});
 init();
 onShow(() => {});
-onLoad((option) => {});
+onLoad((option) => {
+	uni.getLocation({
+		type: 'wgs84',
+		success: (res) => {
+			dataVal.startAddress = res;
+			console.log(res);
+			console.log('当前位置的经度：' + res.longitude);
+			console.log('当前位置的纬度：' + res.latitude);
+		},
+		fail: (err) => {
+			console.log(err);
+		}
+	});
+});
 </script>
 
 <style lang="less" scoped>

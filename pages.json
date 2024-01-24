@@ -69,9 +69,21 @@
 			}
 		},
 		{
+			"path": "pages/task/task-detail",
+			"style": {
+				"navigationBarTitleText": "打卡任务详情"
+			}
+		},
+		{
 			"path": "pages/me/me",
 			"style": {
 				"navigationBarTitleText": "个人中心"
+			}
+		},
+		{
+			"path": "pages/me/seeting",
+			"style": {
+				"navigationBarTitleText": "设置"
 			}
 		},
 		{
@@ -86,9 +98,6 @@
 				"navigationBarTitleText": "成员详情"
 			}
 		}
-	],
-	"requiredPrivateInfos": [
-		"chooseLocation"
 	],
 	"subPackages": [],
 	"globalStyle": {

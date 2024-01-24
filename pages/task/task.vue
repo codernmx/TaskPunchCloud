@@ -1,6 +1,6 @@
 <template>
 	<view class="container position-relative">
-		<image src="/static/bg.jpg" style="width: 100%;height: 100%;opacity: .6;" mode="widthFix" class="position-absolute"></image>
+		<image src="/static/bg.jpg" style="width: 100%;height: 100%;opacity: .6;" mode="scaleToFill" class="position-absolute"></image>
 		<view class="position-absolute d-flex justify-content-center align-items-center direction-column"
 			  style="z-index: 2;width: 100%;margin-top: 20%">
 			<view class="d-flex align-items-center justify-content-center">

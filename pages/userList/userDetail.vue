@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { onLoad, onShow, onPullDownRefresh } from '@dcloudio/uni-app';
 import { useUserStore } from '@/store/index';
 const userStore = useUserStore();
@@ -12,9 +12,10 @@ const dataVal = reactive({
 			todayClockNum: 0
 		},
 		list: []
-	}
+	},
+	params: {}
 });
-const userId = ref('')
+const userId = ref('');
 const bottomList = ref([
 	{ src: '', value: 88 },
 	{ src: '', value: 88 }
@@ -45,7 +46,8 @@ const zanAndShare = async (clockId, type) => {
 const getList = async () => {
 	try {
 		const res = await uni.$u.http.post('/api/user/task_list', {
-			userId: userId.value
+			userId: Number(userId.value),
+			...dataVal.params
 		});
 		dataVal.info = res.data;
 		console.log(res.data, 'res.data');
@@ -54,9 +56,25 @@ const getList = async () => {
 	}
 };
 loadmore();
+const toDetail = (clockId) => {
+	uni.navigateTo({
+		url: '/pages/task/task-detail?clockId=' + clockId
+	});
+};
 onLoad((options) => {
 	userId.value = options.userId ? options.userId : uni.getStorageSync('userInfo').userId;
+	if (options.status) {
+		dataVal.params.status = Number(options.status);
+	}
 	getList();
+});
+const getOneImg = computed(() => (img) => {
+	const arr = JSON.parse(img);
+	if (arr.length > 0) {
+		return arr[0];
+	} else {
+		return '';
+	}
 });
 </script>
 
@@ -71,8 +89,8 @@ onLoad((options) => {
 						<view style="margin-left: 20px">
 							<up-avatar src="" shape="square"></up-avatar>
 						</view>
-						<view class="name">{{userStore.userInfo.realName||'暂未设置'}}</view>
-						<view class="type">{{userStore.userInfo.teamName||'暂未设置'}}</view>
+						<view class="name">{{ userStore.userInfo.realName || '暂未设置' }}</view>
+						<view class="type">{{ userStore.userInfo.teamName || '暂未设置' }}</view>
 					</view>
 					<view class="bottom">
 						<view class="bottom-item">
@@ -94,12 +112,12 @@ onLoad((options) => {
 
 		<u-list @scrolltolower="scrolltolower">
 			<u-list-item v-for="(item, index) in dataVal.info.list" :key="index">
-				<view class="item-list">
+				<view class="item-list" @click="toDetail(item.clockId)">
 					<view class="top">
-						<image src="/static/detail.png" style="width: 60px; height: 60px; margin-right: 10px"></image>
+						<image :src="getOneImg(item.img)" style="width: 60px; height: 60px; margin-right: 10px"></image>
 						<view style="width: calc(100% - 60px)">
 							<view class="title-1">{{ item.detail }}</view>
-							<view class="title-2">{{ item.location }}1</view>
+							<view class="title-2">{{ item.location }}</view>
 						</view>
 					</view>
 					<view class="bottom size-26">

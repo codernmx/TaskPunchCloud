@@ -6,20 +6,19 @@
 					<!-- <u--input v-model="form.userInfo.type" disabled disabledColor="#ffffff" placeholder="" border="none"></u--input> -->
 					<template #right>
 						<view class="d-flex">
-							<text>{{ form.userInfo.type }}</text>
+							<text>{{ form.userInfo.typeStr }}</text>
 							<u-icon name="arrow-right"></u-icon>
 						</view>
 					</template>
 				</u-form-item>
-				<u-form-item label="共同参与者" prop="userInfo.participant" borderBottom @click="showGt = true" ref="item2">
-					<!-- <u--input v-model="form.userInfo.participant" disabled disabledColor="#ffffff" placeholder="" border="none"></u--input> -->
+				<!-- <u-form-item label="共同参与者" prop="userInfo.participant" borderBottom @click="showGt = true" ref="item2">
 					<template #right>
 						<view class="d-flex">
 							<text>{{ form.userInfo.participant }}</text>
 							<u-icon name="arrow-right"></u-icon>
 						</view>
 					</template>
-				</u-form-item>
+				</u-form-item> -->
 				<u-form-item label="" prop="userInfo.img" borderBottom ref="item1">
 					<view style="width: 100%; margin-bottom: 10px; font-size: 15px">编辑任务详情</view>
 					<u-upload :fileList="fileList" @afterRead="afterRead" @delete="deletePic" name="1" multiple :maxCount="9"></u-upload>
@@ -41,7 +40,7 @@
 				title="打卡任务类型"
 				@select="
 					(val) => {
-						selectType(val, 'type');
+						selectType(val, 'type','typeStr');
 					}
 				"
 				@close="showSex = false"
@@ -54,7 +53,7 @@
 				title="共同参与者"
 				@select="
 					(val) => {
-						selectType(val, 'participant');
+						selectType(val, 'participant','participantStr');
 					}
 				"
 				@close="showGt = false"
@@ -70,8 +69,14 @@ import { useUserStore } from '@/store/index';
 import { formatDate } from '@/util/util';
 const userStore = useUserStore();
 import config from '@/common/config';
-
 const baseUrl = config.baseUrl;
+
+import  QQMapWX from '@/util/libs/qqmap-wx-jssdk';
+// var QQMapWX = require('@/util/libs/qqmap-wx-jssdk');
+// 实例化API核心类
+const qqmapsdk = new QQMapWX({
+	key: 'PN3BZ-YPOKC-QYR22-A4MYM-BVUJZ-EPFQF' // 必填
+});
 const showSex = ref(false);
 const showGt = ref(false);
 const form = reactive({
@@ -158,8 +163,10 @@ const uploadFilePromise = (url) => {
 	});
 };
 
-const selectType = (val, key) => {
-	form.userInfo[key] = val.name;
+const selectType = (val, key,str) => {
+	console.log(val)
+	form.userInfo[key] = val.taskId;
+	form.userInfo[str] = val.name;
 };
 const getStatistics = async () => {
 	try {
@@ -200,6 +207,7 @@ const submit = async () => {
 	}
 };
 const chooseAddress = () => {
+	return
 	uni.chooseLocation({
 		success: function (res) {
 			console.log('位置名称：' + res.name);
@@ -234,7 +242,8 @@ const init = async () => {
 		console.log(join.data.list);
 		actions.value = type.data.list.map((item) => {
 			return {
-				name: item.taskName
+				...item,
+				name: item.taskName,
 			};
 		});
 		actionsGtAc.value = join.data.list.map((item) => {
@@ -258,6 +267,17 @@ onLoad((option) => {
 			console.log(res);
 			console.log('当前位置的经度：' + res.longitude);
 			console.log('当前位置的纬度：' + res.latitude);
+
+			//使用jdk的方法解析
+			qqmapsdk.reverseGeocoder({
+				location: [res.latitude, res.longitude].join(','),
+				get_poi:'1',
+				poi_options:'radius=100;page_size=20;page_index=1',
+				success: function (succ) {
+					console.log(succ.result.address, '12121212');
+					form.userInfo.location = succ.result.address;
+				}
+			});
 		},
 		fail: (err) => {
 			console.log(err);

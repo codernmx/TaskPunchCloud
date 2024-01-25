@@ -36,19 +36,24 @@
 import { reactive, computed, ref, onMounted, getCurrentInstance } from 'vue';
 import { onLoad, onShow, onPullDownRefresh } from '@dcloudio/uni-app';
 import { useUserStore } from '@/store/index';
+import { formatDate } from '@/util/util';
 const userStore = useUserStore();
 
 const dataVal = reactive({
-	form: {},
+	form: {
+		username:uni.getStorageSync('username'),
+		password:uni.getStorageSync('password'),
+		updateTime:formatDate(new Date())
+	},
 	comanyLable: []
 });
 const register = ref(false);
 onShow(() => {
-	if (uni.getStorageSync('userInfo')) {
-		uni.switchTab({
-			url: '/pages/home/home'
-		});
-	}
+	// if (uni.getStorageSync('userInfo')) {
+	// 	uni.switchTab({
+	// 		url: '/pages/home/home'
+	// 	});
+	// }
 });
 const empty = () => {};
 const changeCompany = (val) => {
@@ -116,6 +121,10 @@ const login = () => {
 				userStore.token = res.data.token;
 				uni.setStorageSync('userInfo', res.data.userInfo);
 				uni.setStorageSync('token', res.data.token);
+				
+				
+				uni.setStorageSync('username', username);
+				uni.setStorageSync('password', password);
 
 				setTimeout(() => {
 					uni.switchTab({

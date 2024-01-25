@@ -15,5 +15,8 @@
   },
   "devDependencies": {
     "html2canvas": "^1.4.1"
+  },
+  "dependencies": {
+    "pinia-plugin-persistedstate": "^3.2.1"
   }
 }

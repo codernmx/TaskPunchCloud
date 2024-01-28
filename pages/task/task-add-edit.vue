@@ -11,6 +11,28 @@
 						</view>
 					</template>
 				</u-form-item>
+
+				<u-form-item label="" prop="userInfo.detail" borderBottom ref="item1">
+					<view style="width: 100%; margin-bottom: 10px; font-size: 15px">任务介绍信息</view>
+					<u--textarea v-model="form.userInfo.intro" placeholder="" disabled></u--textarea>
+				</u-form-item>
+				<u-form-item label="任务开始时间" prop="userInfo.startTime" borderBottom>
+					<template #right>
+						<view class="d-flex">
+							<text>{{ form.userInfo.startTime }}</text>
+							<u-icon name="arrow-right"></u-icon>
+						</view>
+					</template>
+				</u-form-item>
+				<u-form-item label="任务结束时间" prop="userInfo.endTime" borderBottom>
+					<template #right>
+						<view class="d-flex">
+							<text>{{ form.userInfo.endTime }}</text>
+							<u-icon name="arrow-right"></u-icon>
+						</view>
+					</template>
+				</u-form-item>
+
 				<!-- <u-form-item label="共同参与者" prop="userInfo.participant" borderBottom @click="showGt = true" ref="item2">
 					<template #right>
 						<view class="d-flex">
@@ -20,12 +42,12 @@
 					</template>
 				</u-form-item> -->
 				<u-form-item label="" prop="userInfo.img" borderBottom ref="item1">
-					<view style="width: 100%; margin-bottom: 10px; font-size: 15px">编辑任务详情</view>
+					<view style="width: 100%; margin-bottom: 10px; font-size: 15px">上传任务照片</view>
 					<u-upload :fileList="fileList" @afterRead="afterRead" @delete="deletePic" name="1" multiple :maxCount="9"></u-upload>
 				</u-form-item>
 				<u-form-item label="" prop="userInfo.detail" borderBottom ref="item1">
 					<view style="width: 100%; margin-bottom: 10px; font-size: 15px">编辑任务详情</view>
-					<u--textarea v-model="form.userInfo.detail" placeholder="请输入内容"></u--textarea>
+					<u--textarea v-model="form.userInfo.detail" height="150" maxlength="3000" placeholder="请输入内容"></u--textarea>
 				</u-form-item>
 				<u-form-item label="定位" prop="userInfo.address" borderBottom ref="item1" @click="chooseAddress">
 					<view style="width: 100%; font-size: 15px">{{ form.userInfo.location }}</view>
@@ -40,7 +62,7 @@
 				title="打卡任务类型"
 				@select="
 					(val) => {
-						selectType(val, 'type','typeStr');
+						selectType(val, 'type', 'typeStr');
 					}
 				"
 				@close="showSex = false"
@@ -53,7 +75,7 @@
 				title="共同参与者"
 				@select="
 					(val) => {
-						selectType(val, 'participant','participantStr');
+						selectType(val, 'participant', 'participantStr');
 					}
 				"
 				@close="showGt = false"
@@ -71,7 +93,7 @@ const userStore = useUserStore();
 import config from '@/common/config';
 const baseUrl = config.baseUrl;
 
-import  QQMapWX from '@/util/libs/qqmap-wx-jssdk';
+import QQMapWX from '@/util/libs/qqmap-wx-jssdk';
 // var QQMapWX = require('@/util/libs/qqmap-wx-jssdk');
 // 实例化API核心类
 const qqmapsdk = new QQMapWX({
@@ -163,10 +185,15 @@ const uploadFilePromise = (url) => {
 	});
 };
 
-const selectType = (val, key,str) => {
-	console.log(val)
+const selectType = (val, key, str) => {
+	console.log(val);
+	const { startTime, endTime, intro } = val;
 	form.userInfo[key] = val.taskId;
 	form.userInfo[str] = val.name;
+	form.userInfo['typeName'] = val.name;
+	form.userInfo.endTime = endTime;
+	form.userInfo.startTime = startTime;
+	form.userInfo.intro = intro;
 };
 const getStatistics = async () => {
 	try {
@@ -207,7 +234,16 @@ const submit = async () => {
 	}
 };
 const chooseAddress = () => {
-	return
+	const { latitude, longitude } = dataVal.startAddress;
+	uni.openLocation({
+		latitude,
+		longitude,
+		name: form.userInfo.location,
+		success: function () {
+			console.log('success');
+		}
+	});
+	return;
 	uni.chooseLocation({
 		success: function (res) {
 			console.log('位置名称：' + res.name);
@@ -231,7 +267,9 @@ const chooseAddress = () => {
 };
 const init = async () => {
 	try {
-		const typeList = uni.$u.http.post('/api/user/type_list', {});
+		const typeList = uni.$u.http.post('/api/user/type_list', {
+			wx: true
+		});
 		const joinList = uni.$u.http.post('/api/user/user_list', {
 			teamId: uni.getStorageSync('userInfo').userId,
 			page: 1,
@@ -243,7 +281,7 @@ const init = async () => {
 		actions.value = type.data.list.map((item) => {
 			return {
 				...item,
-				name: item.taskName,
+				name: item.taskName
 			};
 		});
 		actionsGtAc.value = join.data.list.map((item) => {
@@ -271,8 +309,8 @@ onLoad((option) => {
 			//使用jdk的方法解析
 			qqmapsdk.reverseGeocoder({
 				location: [res.latitude, res.longitude].join(','),
-				get_poi:'1',
-				poi_options:'radius=100;page_size=20;page_index=1',
+				get_poi: '1',
+				poi_options: 'radius=100;page_size=20;page_index=1',
 				success: function (succ) {
 					console.log(succ.result.address, '12121212');
 					form.userInfo.location = succ.result.address;
@@ -280,7 +318,12 @@ onLoad((option) => {
 			});
 		},
 		fail: (err) => {
-			console.log(err);
+			console.log(err, '定位报错');
+			if (err.errMsg === 'getLocation:fail system permission denied') {
+				uni.$u.toast('请检查定位是否打开');
+			} else {
+				uni.$u.toast(err.errMsg);
+			}
 		}
 	});
 });

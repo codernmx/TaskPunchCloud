@@ -11,14 +11,14 @@ const getList = async () => {
 		const res = await uni.$u.http.post('/api/user/user_list', {
 			teamId: uni.getStorageSync('userInfo').teamId
 		});
-		indexList.value = res.data.list
+		indexList.value = res.data.list;
 	} catch (err) {
 		console.log(err);
 	}
 };
-const toDetail = () => {
+const toDetail = ({ userId }) => {
 	uni.navigateTo({
-		url: '/pages/userList/userDetail'
+		url: '/pages/userList/userDetail?userId=' + userId
 	});
 };
 // loadmore();
@@ -29,10 +29,10 @@ getList();
 	<view class="u-page">
 		<u-list @scrolltolower="scrolltolower">
 			<u-list-item v-for="(item, index) in indexList" :key="index">
-				<view class="item-list" @click="toDetail">
+				<view class="item-list" @click="toDetail(item)">
 					<u-cell :title="item.realName">
 						<template #icon>
-							<u-avatar shape="circle" size="35" :src="item.url" customStyle="margin: -3px 5px -3px 0"></u-avatar>
+							<u-avatar shape="circle" size="35" :src="item.avatarUrl" customStyle="margin: -3px 5px -3px 0"></u-avatar>
 						</template>
 					</u-cell>
 					<view class="icon-uni">

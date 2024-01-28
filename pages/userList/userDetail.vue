@@ -13,7 +13,8 @@ const dataVal = reactive({
 		},
 		list: []
 	},
-	params: {}
+	params: {},
+	user:{}
 });
 const userId = ref('');
 const bottomList = ref([
@@ -46,15 +47,28 @@ const zanAndShare = async (clockId, type) => {
 const getList = async () => {
 	try {
 		const res = await uni.$u.http.post('/api/user/task_list', {
-			userId: Number(userId.value),
+			userId: userId.value.toString(),
 			...dataVal.params
 		});
 		dataVal.info = res.data;
-		console.log(res.data, 'res.data');
 	} catch (err) {
 		console.log(err);
 	}
 };
+
+
+const getUserInfo = async () => {
+	try {
+		const res = await uni.$u.http.post('/api/user/user_list', {
+			userId: userId.value.toString(),
+		});
+		console.log(res.data.list[0],'res')
+		dataVal.user = res.data.list[0]
+	} catch (err) {
+		console.log(err);
+	}
+};
+
 loadmore();
 const toDetail = (clockId) => {
 	uni.navigateTo({
@@ -64,9 +78,15 @@ const toDetail = (clockId) => {
 onLoad((options) => {
 	userId.value = options.userId ? options.userId : uni.getStorageSync('userInfo').userId;
 	if (options.status) {
-		dataVal.params.status = Number(options.status);
+		dataVal.params.status = options.status;
+	}
+	if (options.from) {
+		uni.setNavigationBarTitle({
+			title:'任务列表'
+		})
 	}
 	getList();
+	getUserInfo()
 });
 const getOneImg = computed(() => (img) => {
 	const arr = JSON.parse(img);
@@ -87,10 +107,10 @@ const getOneImg = computed(() => (img) => {
 				<view class="info">
 					<view class="top">
 						<view style="margin-left: 20px">
-							<up-avatar src="" shape="square"></up-avatar>
+							<up-avatar :src="dataVal.user.avatarUrl" shape="square"></up-avatar>
 						</view>
-						<view class="name">{{ userStore.userInfo.realName || '暂未设置' }}</view>
-						<view class="type">{{ userStore.userInfo.teamName || '暂未设置' }}</view>
+						<view class="name">{{ dataVal.user.realName || '暂未设置' }}</view>
+						<view class="type">{{ dataVal.user.teamName || '暂未设置' }}</view>
 					</view>
 					<view class="bottom">
 						<view class="bottom-item">
@@ -116,19 +136,20 @@ const getOneImg = computed(() => (img) => {
 					<view class="top">
 						<image :src="getOneImg(item.img)" style="width: 60px; height: 60px; margin-right: 10px"></image>
 						<view style="width: calc(100% - 60px)">
-							<view class="title-1">{{ item.detail }}</view>
+							<view class="title-1">{{ item.typeName }}</view>
 							<view class="title-2">{{ item.location }}</view>
+							<view class="title-2">打卡时间：{{ item.completeTime }}</view>
 						</view>
 					</view>
 					<view class="bottom size-26">
 						<view class="bottom-item">
-							<view class="t-title d-flex align-items-center" @click="zanAndShare(item.clockId, 1)">
+							<view class="t-title d-flex align-items-center" @click.stop="zanAndShare(item.clockId, 1)">
 								<u-icon name="share" size="20"></u-icon>
 								{{ item.shareNum }}
 							</view>
 						</view>
 						<view class="bottom-item">
-							<view class="t-title d-flex align-items-center" @click="zanAndShare(item.clockId, 2)">
+							<view class="t-title d-flex align-items-center" @click.stop="zanAndShare(item.clockId, 2)">
 								<u-icon name="thumb-up" size="20"></u-icon>
 								{{ item.zanNum }}
 							</view>

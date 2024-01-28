@@ -59,9 +59,9 @@ import config from '@/common/config';
 const baseUrl = config.baseUrl;
 
 const toTask = (type) => {
-	let url = '/pages/userList/userDetail';
+	let url = '/pages/userList/userDetail?from=me';
 	if (type === 2) {
-		url = '/pages/userList/userDetail?status=3';
+		url = '/pages/userList/userDetail?status=3&from=me';
 	}
 	uni.navigateTo({
 		url

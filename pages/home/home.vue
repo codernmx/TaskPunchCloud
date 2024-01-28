@@ -13,7 +13,7 @@
 			<view v-for="(item, i) in dataVal.tableList" :key="i" class="d-flex space-between mb-2">
 				<view class="d-flex align-items-center" @click="toDetail(item)">
 					<view class="index">{{ i + 1 }}</view>
-					<image src="/static/head.png" style="height: 80rpx; width: 80rpx; margin: 0 20rpx"></image>
+					<image :src="dataVal.active === 1 ? item.avatarUrl : item.imgUrl" style="height: 80rpx; width: 80rpx; margin: 0 20rpx;border-radius: 50%;"></image>
 					<view>{{ dataVal.active === 1 ? item.realName : item.teamName }}</view>
 				</view>
 				<view>{{ dataVal.active === 1 ? item.taskNum : item.total }}</view>
@@ -56,7 +56,7 @@ const dataVal = reactive({
 const getList = async () => {
 	try {
 		const res = await uni.$u.http.post('/api/user/task_user_rank', {
-			userId: uni.getStorageSync('userInfo').userId,
+			// userId: uni.getStorageSync('userInfo').userId,
 			type: 'taskNum'
 		});
 		dataVal.tableList = res.data.list;

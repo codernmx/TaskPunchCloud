@@ -4,23 +4,23 @@
 			<image src="../../static/detail.png" style="width: 100%; height: 250rpx" mode=""></image>
 			<image src="../../static/cloud.png" mode="" class="position-absolute" style="z-index: 3; top: 30rpx; right: 50rpx; width: 150rpx; height: 150rpx"></image>
 
-			<view class="position-absolute white" style="bottom: 80rpx;left: 30rpx;">打卡时间：{{ dataVal.info.completeTime }}</view>
+			<view class="position-absolute white" style="bottom: 120rpx;left: 30rpx;">打卡时间：{{ dataVal.info.completeTime }}</view>
 		</view>
 		<view class="main position-relative">
 			<view class="d-flex space-between ydk">
 				<view class="d-flex align-items-center">
-					<image src="../../static/head.png" style="width: 120rpx; height: 120rpx; border-radius: 50%" mode=""></image>
+					<image :src="dataVal.user.avatarUrl" style="width: 120rpx; height: 120rpx; border-radius: 50%" mode=""></image>
 					<view class="pl-2">
-						<view>张三</view>
-						<view>用户组1</view>
+						<view>{{dataVal.user.realName}}</view>
+						<view>{{dataVal.user.teamName}}</view>
 					</view>
 				</view>
 				<image src="../../static/ydk.png" style="width: 156rpx; height: 122rpx" mode=""></image>
 			</view>
 
 			<view class="intro">
-				<view class="text-bold">共同参与者</view>
-				<view>56666666666</view>
+				<view class="text-bold">参与者</view>
+				<view class="mt-1">{{dataVal.user.realName}}</view>
 				<u-divider text=""></u-divider>
 				<view class="text-bold">任务照片</view>
 				<view>
@@ -49,7 +49,8 @@ const baseUrl = config.baseUrl;
 
 const dataVal = reactive({
 	userInfo: {},
-	info: {}
+	info: {},
+	user: {},
 });
 
 const toAddEdit = () => {
@@ -64,6 +65,7 @@ const getInfo = async (taskId) => {
 			...res.data.info,
 			imgArr: JSON.parse(res.data.info.img)
 		};
+		dataVal.user = res.data.user
 	} catch (err) {
 		console.log(err);
 	}

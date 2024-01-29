@@ -276,8 +276,8 @@ const init = async () => {
 			pageSize: 100
 		});
 		const [type, join] = await Promise.all([typeList, joinList]);
-		console.log(type.data.list);
-		console.log(join.data.list);
+		console.log(type.data.list,'34');
+		console.log(join.data,'12');
 		actions.value = type.data.list.map((item) => {
 			return {
 				...item,

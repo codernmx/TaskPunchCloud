@@ -1,7 +1,7 @@
 <template>
 	<view>
-		<image v-if="dataVal.active === 1" src="/static/home_bg.png" style="width: 100%; height: 600rpx"></image>
-		<image v-else src="/static/td.png" style="width: 100%; height: 600rpx"></image>
+		<image v-if="dataVal.active === 1" src="/static/home_bg.png" style="width: 100%; height: 750rpx"></image>
+		<image v-else src="/static/td.png" style="width: 100%; height: 750rpx"></image>
 		<view class="team-choose">
 			<view v-for="(item, i) in dataVal.team" :key="i" :class="{ active: dataVal.active === item.index, item: true }" @click="tamChange(item)">
 				{{ item.name }}
@@ -9,6 +9,34 @@
 		</view>
 	</view>
 	<view class="container">
+		<view class="d-flex space-between" style="margin-top: -190rpx;margin-bottom: 180rpx;padding: 0 13%;">
+			<view class="d-flex direction-column align-items-center white">
+				<view class="position-relative">
+					<image src="../../static/head/two.png" style="width: 120rpx;height: 135rpx;position: absolute;" mode=""></image>
+					<image :src="dataVal.active === 1 ? dataVal.oneTwoThree[1].avatarUrl : dataVal.oneTwoThree[1].imgUrl" style="height: 100rpx; width: 100rpx; margin: 30rpx 20rpx 0 10rpx;border-radius: 50%;"></image>
+				</view>
+				<view class="mt-1">{{ dataVal.active === 1 ? dataVal.oneTwoThree[1].realName : dataVal.oneTwoThree[1].teamName }}</view>
+				<view>{{ dataVal.active === 1 ? dataVal.oneTwoThree[1].taskNum : dataVal.oneTwoThree[1].total }}</view>
+			</view>
+			<view style="margin-top: -30rpx;" class="d-flex direction-column align-items-center white">
+				<view class="position-relative">
+					<image src="../../static/head/one.png" style="width: 120rpx;height: 160rpx;position: absolute;" mode=""></image>
+					<image :src="dataVal.active === 1 ? dataVal.oneTwoThree[0].avatarUrl : dataVal.oneTwoThree[0].imgUrl" style="height: 110rpx; width: 110rpx; margin: 50rpx 20rpx 0 5rpx;border-radius: 50%;"></image>
+				</view>
+				
+				<view class="mt-1">{{ dataVal.active === 1 ? dataVal.oneTwoThree[0].realName : dataVal.oneTwoThree[0].teamName }}</view>
+				<view>{{ dataVal.active === 1 ? dataVal.oneTwoThree[0].taskNum : dataVal.oneTwoThree[0].total }}</view>
+			</view>
+			
+			<view class="d-flex direction-column align-items-center white">
+				<view class="position-relative">
+					<image src="../../static/head/three.png" style="width: 120rpx;height: 130rpx;margin-top: 20rpx;position: absolute;" mode=""></image>
+					<image :src="dataVal.active === 1 ? dataVal.oneTwoThree[2].avatarUrl : dataVal.oneTwoThree[2].imgUrl" style="height: 110rpx; width: 100rpx; margin: 40rpx 20rpx 0 10rpx;border-radius: 50%;"></image>
+				</view>
+				<view class="mt-1">{{ dataVal.active === 1 ? dataVal.oneTwoThree[2].realName : dataVal.oneTwoThree[2].teamName }}</view>
+				<view>{{ dataVal.active === 1 ? dataVal.oneTwoThree[2].taskNum : dataVal.oneTwoThree[2].total }}</view>
+			</view>
+		</view>
 		<view class="box">
 			<view v-for="(item, i) in dataVal.tableList" :key="i" class="d-flex space-between mb-2">
 				<view class="d-flex align-items-center" @click="toDetail(item)">
@@ -38,6 +66,11 @@ const baseUrl = config.baseUrl;
 
 const dataVal = reactive({
 	tableList: [],
+	oneTwoThree: [
+		{},
+		{},
+		{},
+	],
 	team: [
 		{
 			index: 1,
@@ -59,7 +92,8 @@ const getList = async () => {
 			// userId: uni.getStorageSync('userInfo').userId,
 			type: 'taskNum'
 		});
-		dataVal.tableList = res.data.list;
+		dataVal.oneTwoThree = res.data.list.slice(0,3)
+		dataVal.tableList = res.data.list.slice(3);
 	} catch (err) {
 		console.log(err);
 	}
@@ -75,14 +109,29 @@ const toDetail = (item) => {
 	}
 };
 const more = () => {
-	uni.navigateTo({
-		url: '/pages/home/more'
-	});
+	if (dataVal.active === 1) {
+		uni.navigateTo({
+				url: '/pages/home/more'
+			});
+	}else{
+		uni.navigateTo({
+				url: '/pages/home/more-team'
+			});
+	}
 };
 const getTeamList = async () => {
 	try {
 		const res = await uni.$u.http.post('/api/user/task_group_rank', {});
-		dataVal.tableList = res.data.list;
+		// dataVal.tableList = res.data.list;
+		
+		dataVal.oneTwoThree = res.data.list.slice(0,3)
+		if(dataVal.oneTwoThree.length<3){
+			
+			for (let i = 0; i < 3-dataVal.oneTwoThree.length; i++) {
+			    dataVal.oneTwoThree.push({});
+			}
+		}
+		dataVal.tableList = res.data.list.slice(3);
 	} catch (err) {
 		console.log(err);
 	}
@@ -90,7 +139,6 @@ const getTeamList = async () => {
 
 const tamChange = (item) => {
 	dataVal.active = item.index;
-	console.log(dataVal.active, 'dataVal.active');
 	if (dataVal.active === 2) {
 		getTeamList();
 	}else{
@@ -103,15 +151,28 @@ onPullDownRefresh(() => {});
 onShow(() => {});
 onLoad((option) => {
 	getList();
+	
+	setTimeout(()=>{
+		// uni.setTabBarItem({
+		// 	index: 1,
+		// 	text: '审核',
+		// 	fail:err=>{
+		// 		console.log(err)
+		// 	},
+		// 	success:res=>{
+		// 		console.log(res)
+		// 	}
+		// });
+	})
 });
 </script>
 
 <style lang="less" scoped>
 .team-choose {
 	width: calc(100% - 92px);
-	border-radius: 79px;
-	height: 36px;
-	margin: -150px 46px 115px 46px;
+	border-radius: 158rpx;
+	height: 72rpx;
+	margin: -448rpx 92rpx 230rpx 92rpx;
 	//margin: 0 46px;
 	//background: rgba(255, 30, 30, 0.35);
 	background: black;
@@ -145,7 +206,7 @@ onLoad((option) => {
 	.box {
 		position: relative;
 		z-index: 66;
-		margin-top: -30rpx;
+		margin-top: -120rpx;
 		padding: 20rpx;
 		border-radius: 20rpx;
 		background: linear-gradient(180deg, #ffd5be 0%, rgba(255, 255, 255, 0) 100%);

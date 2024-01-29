@@ -41,9 +41,9 @@ const userStore = useUserStore();
 
 const dataVal = reactive({
 	form: {
-		username:uni.getStorageSync('username'),
-		password:uni.getStorageSync('password'),
-		updateTime:formatDate(new Date())
+		username: uni.getStorageSync('username'),
+		password: uni.getStorageSync('password'),
+		updateTime: formatDate(new Date())
 	},
 	comanyLable: []
 });
@@ -121,16 +121,16 @@ const login = () => {
 				userStore.token = res.data.token;
 				uni.setStorageSync('userInfo', res.data.userInfo);
 				uni.setStorageSync('token', res.data.token);
-				
-				
+
 				uni.setStorageSync('username', username);
 				uni.setStorageSync('password', password);
 
 				setTimeout(() => {
+					
 					uni.switchTab({
 						url: '/pages/home/home'
 					});
-				}, 1500);
+				}, 1000);
 			}
 		},
 		fail: (err) => {

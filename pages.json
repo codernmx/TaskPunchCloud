@@ -54,11 +54,24 @@
 				"navigationBarTitleText": "任务云"
 			}
 		},
+		{
+			"path": "pages/home/more-team",
+			"style": {
+				"navigationBarTitleText": "任务云"
+			}
+		},
 
 		{
 			"path": "pages/task/task",
 			"style": {
 				"navigationBarTitleText": "任务云",
+				"disableScroll": true
+			}
+		},
+		{
+			"path": "pages/task/audit",
+			"style": {
+				"navigationBarTitleText": "任务",
 				"disableScroll": true
 			}
 		},

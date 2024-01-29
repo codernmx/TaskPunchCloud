@@ -24,7 +24,7 @@
 				<u-divider text=""></u-divider>
 				<view class="text-bold">任务照片</view>
 				<view>
-					<image v-for="item in dataVal.info.imgArr" :src="item" mode="" style="width: 120rpx; height: 120rpx; margin: 10rpx 10rpx 10rpx 0"></image>
+					<image v-for="item in dataVal.info.imgArr" :src="item" mode="" style="width: 120rpx; height: 120rpx; margin: 10rpx 10rpx 10rpx 0" @click="previewImg(item)"></image>
 				</view>
 				<u-divider text=""></u-divider>
 				<view class="text-bold">定位地址</view>
@@ -58,6 +58,12 @@ const toAddEdit = () => {
 		url: '/pages/task/task-add-edit'
 	});
 };
+
+const previewImg  =(item)=>{
+	uni.previewImage({
+		urls:[item]
+	})
+}
 const getInfo = async (taskId) => {
 	try {
 		const res = await uni.$u.http.post('/api/user/task_detail', { taskId });

@@ -9,8 +9,8 @@
 		</view>
 	</view>
 	<view class="container">
-		<view class="d-flex space-between" style="margin-top: -190rpx;margin-bottom: 180rpx;padding: 0 13%;">
-			<view class="d-flex direction-column align-items-center white">
+		<view class="d-flex space-between" style="margin-bottom: 180rpx;padding: 0 13%;" :style="{marginTop:dataVal.active === 1 ? '-200rpx' : '-180rpx'}">
+			<view class="d-flex direction-column align-items-center white" @click="toDetail(dataVal.oneTwoThree[1])">
 				<view class="position-relative">
 					<image src="../../static/head/two.png" style="width: 120rpx;height: 135rpx;position: absolute;" mode=""></image>
 					<image :src="dataVal.active === 1 ? dataVal.oneTwoThree[1].avatarUrl : dataVal.oneTwoThree[1].imgUrl" style="height: 100rpx; width: 100rpx; margin: 30rpx 20rpx 0 10rpx;border-radius: 50%;"></image>
@@ -18,7 +18,7 @@
 				<view class="mt-1">{{ dataVal.active === 1 ? dataVal.oneTwoThree[1].realName : dataVal.oneTwoThree[1].teamName }}</view>
 				<view>{{ dataVal.active === 1 ? dataVal.oneTwoThree[1].taskNum : dataVal.oneTwoThree[1].total }}</view>
 			</view>
-			<view style="margin-top: -30rpx;" class="d-flex direction-column align-items-center white">
+			<view style="margin-top: -30rpx;" class="d-flex direction-column align-items-center white" @click="toDetail(dataVal.oneTwoThree[0])">
 				<view class="position-relative">
 					<image src="../../static/head/one.png" style="width: 120rpx;height: 160rpx;position: absolute;" mode=""></image>
 					<image :src="dataVal.active === 1 ? dataVal.oneTwoThree[0].avatarUrl : dataVal.oneTwoThree[0].imgUrl" style="height: 110rpx; width: 110rpx; margin: 50rpx 20rpx 0 5rpx;border-radius: 50%;"></image>
@@ -28,7 +28,7 @@
 				<view>{{ dataVal.active === 1 ? dataVal.oneTwoThree[0].taskNum : dataVal.oneTwoThree[0].total }}</view>
 			</view>
 			
-			<view class="d-flex direction-column align-items-center white">
+			<view class="d-flex direction-column align-items-center white" @click="toDetail(dataVal.oneTwoThree[2])">
 				<view class="position-relative">
 					<image src="../../static/head/three.png" style="width: 120rpx;height: 130rpx;margin-top: 20rpx;position: absolute;" mode=""></image>
 					<image :src="dataVal.active === 1 ? dataVal.oneTwoThree[2].avatarUrl : dataVal.oneTwoThree[2].imgUrl" style="height: 110rpx; width: 100rpx; margin: 40rpx 20rpx 0 10rpx;border-radius: 50%;"></image>
@@ -40,7 +40,7 @@
 		<view class="box">
 			<view v-for="(item, i) in dataVal.tableList" :key="i" class="d-flex space-between mb-2">
 				<view class="d-flex align-items-center" @click="toDetail(item)">
-					<view class="index">{{ i + 1 }}</view>
+					<view class="index">{{ i + 4 }}</view>
 					<image :src="dataVal.active === 1 ? item.avatarUrl : item.imgUrl" style="height: 80rpx; width: 80rpx; margin: 0 20rpx;border-radius: 50%;"></image>
 					<view>{{ dataVal.active === 1 ? item.realName : item.teamName }}</view>
 				</view>

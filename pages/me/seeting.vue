@@ -1,6 +1,8 @@
 <template>
 	<view class="container">
+		<up-input placeholder="请输入原密码" custom-style="margin-top:30rpx" border="surround" v-model="old"></up-input>
 		<up-input placeholder="请输入新密码" custom-style="margin-top:30rpx" border="surround" v-model="value"></up-input>
+		<up-input placeholder="请确认新密码" custom-style="margin-top:30rpx" border="surround" v-model="repasword"></up-input>
 		<u-button text="提交" @click="$u.debounce(submit, 700)" type="error" custom-style="margin-top:30rpx"></u-button>
 	</view>
 </template>
@@ -17,10 +19,22 @@ import config from '@/common/config';
 
 const baseUrl = config.baseUrl;
 
+const old = ref('');
 const value = ref('');
+const repasword = ref('');
 const submit = async () => {
 	if (!value.value) {
 		uni.$u.toast('请输入新密码');
+		return;
+	}
+	
+	if (old.value !== uni.getStorageSync('password')) {
+		uni.$u.toast('原密码错误');
+		return;
+	}
+	
+	if (value.value !== repasword.value) {
+		uni.$u.toast('两次密码不一致');
 		return;
 	}
 
@@ -32,6 +46,7 @@ const submit = async () => {
 		.then((result) => {
 			if (result.code === 200) {
 				uni.$u.toast('修改成功');
+				uni.setStorageSync('password',value.value)
 				setTimeout(() => {
 					uni.switchTab({
 						url: '/pages/me/me'

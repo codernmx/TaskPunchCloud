@@ -49,8 +49,11 @@
 					<view style="width: 100%; margin-bottom: 10px; font-size: 15px">编辑任务详情</view>
 					<u--textarea v-model="form.userInfo.detail" height="150" maxlength="3000" placeholder="请输入内容"></u--textarea>
 				</u-form-item>
-				<u-form-item label="定位" prop="userInfo.address" borderBottom ref="item1" @click="chooseAddress">
-					<view style="width: 100%; font-size: 15px">{{ form.userInfo.location }}</view>
+				<u-form-item label="定位" prop="userInfo.address" borderBottom ref="item1">
+					<view class="d-flex align-items-center">
+						<view style="width: 100%; font-size: 15px" @click="chooseAddress">{{ form.userInfo.location }}</view>
+						<view @click="showAddress = true" style="width: 120rpx;">重选</view>
+					</view>
 				</u-form-item>
 				<u-form-item>
 					<up-button type="error" text="打卡" @click="$u.debounce(submit, 700)"></up-button>
@@ -80,6 +83,20 @@
 				"
 				@close="showGt = false"
 			></u-action-sheet>
+
+			<!-- 选择定位 -->
+
+			<u-action-sheet
+				:show="showAddress"
+				:actions="addressActions"
+				title="打卡任务类型"
+				@select="
+					(val) => {
+						selectAddress(val);
+					}
+				"
+				@close="showAddress = false"
+			></u-action-sheet>
 		</view>
 	</view>
 </template>
@@ -101,6 +118,7 @@ const qqmapsdk = new QQMapWX({
 });
 const showSex = ref(false);
 const showGt = ref(false);
+const showAddress = ref(false);
 const form = reactive({
 	userInfo: {
 		location: '',
@@ -114,6 +132,7 @@ const form = reactive({
 
 const actions = ref([]);
 const actionsGtAc = ref([]);
+const addressActions = ref([]);
 
 const rules = {
 	'userInfo.name': {
@@ -184,7 +203,18 @@ const uploadFilePromise = (url) => {
 		});
 	});
 };
+const selectAddress = (val) => {
+	console.log(val);
+	const { lat, lng } = val.location;
+	const { title } = val;
 
+	form.userInfo.location = title;
+	dataVal.startAddress = {
+		...dataVal.startAddress,
+		latitude: lat,
+		longitude: lng
+	};
+};
 const selectType = (val, key, str) => {
 	console.log(val);
 	const { startTime, endTime, intro } = val;
@@ -276,8 +306,8 @@ const init = async () => {
 			pageSize: 100
 		});
 		const [type, join] = await Promise.all([typeList, joinList]);
-		console.log(type.data.list,'34');
-		console.log(join.data,'12');
+		console.log(type.data.list, '34');
+		console.log(join.data, '12');
 		actions.value = type.data.list.map((item) => {
 			return {
 				...item,
@@ -299,7 +329,7 @@ init();
 onShow(() => {});
 onLoad((option) => {
 	uni.getLocation({
-		type: 'wgs84',
+		type: 'gcj02',
 		success: (res) => {
 			dataVal.startAddress = res;
 			console.log(res);
@@ -310,10 +340,17 @@ onLoad((option) => {
 			qqmapsdk.reverseGeocoder({
 				location: [res.latitude, res.longitude].join(','),
 				get_poi: '1',
-				poi_options: 'radius=100;page_size=20;page_index=1',
+				poi_options: 'radius=200',
 				success: function (succ) {
-					console.log(succ.result.address, '12121212');
+					console.log(succ, '12121212');
 					form.userInfo.location = succ.result.address;
+
+					addressActions.value = succ.result.pois.map((item) => {
+						return {
+							...item,
+							name: item.title
+						};
+					});
 				}
 			});
 		},

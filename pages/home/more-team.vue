@@ -8,7 +8,7 @@
 		</view>
 	</view>
 	<view class="container">
-		<view class="box">
+		<view class="box" style="height: 80vh;overflow: scroll;">
 			<view v-for="(item, i) in dataVal.tableList" :key="i" class="d-flex space-between mb-2">
 				<view class="d-flex align-items-center" @click="toDetail(item)">
 					<view class="index">{{ i + 1 }}</view>

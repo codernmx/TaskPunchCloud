@@ -1,15 +1,15 @@
 <script setup>
 import { ref } from 'vue';
-
+import { onLoad, onShow, onPullDownRefresh } from '@dcloudio/uni-app';
 const indexList = ref([]);
 
 const scrolltolower = () => {
 	loadmore();
 };
-const getList = async () => {
+const getList = async (teamId) => {
 	try {
 		const res = await uni.$u.http.post('/api/user/user_list', {
-			teamId: uni.getStorageSync('userInfo').teamId
+			teamId
 		});
 		indexList.value = res.data.list;
 	} catch (err) {
@@ -22,7 +22,10 @@ const toDetail = ({ userId }) => {
 	});
 };
 // loadmore();
-getList();
+
+onLoad((options) => {
+	getList(options.teamId);
+});
 </script>
 
 <template>

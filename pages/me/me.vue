@@ -69,7 +69,7 @@ const toTask = (type) => {
 };
 const toTeam = () => {
 	uni.navigateTo({
-		url: '/pages/userList/userList'
+		url: '/pages/userList/userList?teamId='+uni.getStorageSync('userInfo').teamId
 	});
 };
 const toSeeting = () => {

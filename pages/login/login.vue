@@ -115,7 +115,7 @@ const login = () => {
 				uni.$u.toast('注册成功');
 				register.value = true;
 			}
-			if (!register.value && res.code === 200) {
+			if (!register.value && res.message === '用户登入成功') {
 				uni.$u.toast('登录成功');
 				userStore.userInfo = res.data.userInfo;
 				userStore.token = res.data.token;
@@ -131,6 +131,10 @@ const login = () => {
 						url: '/pages/home/home'
 					});
 				}, 1000);
+			}
+			
+			if(res.message ==='暂未注册!'){
+				uni.$u.toast('登录失败');
 			}
 		},
 		fail: (err) => {

@@ -104,7 +104,7 @@ const getList = async () => {
 			}
 		}
 		console.log(dataVal.oneTwoThree, '5656');
-		dataVal.tableList = res.data.list.slice(3);
+		dataVal.tableList = res.data.list.slice(3,10);
 	} catch (err) {
 		console.log(err);
 	}
@@ -149,7 +149,7 @@ const getTeamList = async () => {
 				dataVal.oneTwoThree.push({});
 			}
 		}
-		dataVal.tableList = res.data.list.slice(3);
+		dataVal.tableList = res.data.list.slice(3,10);
 	} catch (err) {
 		console.log(err);
 	}

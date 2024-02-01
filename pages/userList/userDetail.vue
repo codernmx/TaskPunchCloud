@@ -14,7 +14,7 @@ const dataVal = reactive({
 		list: []
 	},
 	params: {},
-	user:{}
+	user: {}
 });
 const userId = ref('');
 const bottomList = ref([
@@ -51,19 +51,20 @@ const getList = async () => {
 			...dataVal.params
 		});
 		dataVal.info = res.data;
+		
+		console.log(dataVal.info.list.length,'kl')
 	} catch (err) {
 		console.log(err);
 	}
 };
 
-
 const getUserInfo = async () => {
 	try {
 		const res = await uni.$u.http.post('/api/user/user_list', {
-			userId: userId.value.toString(),
+			userId: userId.value.toString()
 		});
-		console.log(res.data.list[0],'res')
-		dataVal.user = res.data.list[0]
+		console.log(res.data.list[0], 'res');
+		dataVal.user = res.data.list[0];
 	} catch (err) {
 		console.log(err);
 	}
@@ -82,11 +83,11 @@ onLoad((options) => {
 	}
 	if (options.from) {
 		uni.setNavigationBarTitle({
-			title:'任务列表'
-		})
+			title: '任务列表'
+		});
 	}
 	getList();
-	getUserInfo()
+	getUserInfo();
 });
 const getOneImg = computed(() => (img) => {
 	const arr = JSON.parse(img);
@@ -129,7 +130,6 @@ const getOneImg = computed(() => (img) => {
 				</view>
 			</view>
 		</view>
-
 		<u-list @scrolltolower="scrolltolower">
 			<u-list-item v-for="(item, index) in dataVal.info.list" :key="index">
 				<view class="item-list" @click="toDetail(item.clockId)">
@@ -158,6 +158,8 @@ const getOneImg = computed(() => (img) => {
 				</view>
 			</u-list-item>
 		</u-list>
+
+		<!-- <u-empty mode="data" v-if="dataVal.info.list.length == 0"></u-empty> -->
 	</view>
 </template>
 

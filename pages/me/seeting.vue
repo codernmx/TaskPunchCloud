@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<up-input placeholder="请输入原密码" custom-style="margin-top:30rpx" border="surround" v-model="old"></up-input>
+		<up-input placeholder="请输入原密码" border="surround" v-model="old"></up-input>
 		<up-input placeholder="请输入新密码" custom-style="margin-top:30rpx" border="surround" v-model="value"></up-input>
 		<up-input placeholder="请确认新密码" custom-style="margin-top:30rpx" border="surround" v-model="repasword"></up-input>
 		<u-button text="提交" @click="$u.debounce(submit, 700)" type="error" custom-style="margin-top:30rpx"></u-button>
@@ -161,14 +161,10 @@ onLoad((option) => {});
 </script>
 
 <style lang="less" scoped>
-.head {
-	display: flex;
-	position: absolute;
-}
 .container {
 	background: #f5f5f5;
 	height: 100vh;
-	padding: 0 30rpx;
+	padding: 30rpx 30rpx 0 30rpx;
 
 	.task {
 		border-radius: 30rpx;

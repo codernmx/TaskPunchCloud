@@ -69,13 +69,6 @@
 			}
 		},
 		{
-			"path": "pages/task/audit",
-			"style": {
-				"navigationBarTitleText": "任务",
-				"disableScroll": true
-			}
-		},
-		{
 			"path": "pages/task/task-add-edit",
 			"style": {
 				"navigationBarTitleText": "任务信息"
@@ -91,6 +84,18 @@
 			"path": "pages/me/me",
 			"style": {
 				"navigationBarTitleText": "个人中心"
+			}
+		},
+		{
+			"path": "pages/me/help",
+			"style": {
+				"navigationBarTitleText": "帮助中心"
+			}
+		},
+		{
+			"path": "pages/me/feedback",
+			"style": {
+				"navigationBarTitleText": "反馈建议"
 			}
 		},
 		{

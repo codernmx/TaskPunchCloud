@@ -4,16 +4,26 @@
 		<image src="/static/bg.jpg" mode="heightFix" style="opacity: 0.6; width: 100%; height: 100%; position: absolute; margin-left: -60rpx"></image>
 		<view class="position-absolute login-form">
 			<up-input placeholder="请输入账号" border="surround" v-model="dataVal.form.username" custom-style="background:#ffffff"></up-input>
-			<up-input placeholder="请输入密码" border="surround" password clearable v-model="dataVal.form.password" custom-style="margin-top:30rpx;background:#ffffff"></up-input>
+			<up-input placeholder="请输入密码" border="surround" :password="password" clearable v-model="dataVal.form.password" custom-style="margin-top:30rpx;background:#ffffff">
+				<template #suffix>
+					<u-icon name="eye-fill" size="22" v-if="password" @click="password = !password"></u-icon>
+					<u-icon name="eye-off" size="22" v-else @click="password = !password"></u-icon>
+				</template>
+			</up-input>
 			<up-input
 				v-if="register"
 				placeholder="请重复输入密码"
 				border="surround"
-				password
+				:password="repassword"
 				clearable
 				v-model="dataVal.form.repassword"
 				custom-style="margin-top:30rpx;background:#ffffff"
-			></up-input>
+			>
+				<template #suffix>
+					<u-icon name="eye-fill" size="22" v-if="repassword" @click="repassword = !repassword"></u-icon>
+					<u-icon name="eye-off" size="22" v-else @click="repassword = !repassword"></u-icon>
+				</template>
+			</up-input>
 			<view v-if="register" style="height: 30rpx"></view>
 			<uni-combox
 				v-if="register"
@@ -47,6 +57,8 @@ const dataVal = reactive({
 	},
 	comanyLable: []
 });
+const password = ref(true);
+const repassword = ref(true);
 const register = ref(false);
 onShow(() => {
 	// if (uni.getStorageSync('userInfo')) {
@@ -105,6 +117,10 @@ const login = () => {
 				mask: true,
 				title: '加载中'
 			});
+			if (register.value) {
+				uni.$u.toast('暂未开放注册');
+				return;
+			}
 			let url = register.value ? '/api/user/register' : '/api/user/wx_login';
 			const res = await uni.$u.http.post(url, {
 				code,
@@ -126,14 +142,13 @@ const login = () => {
 				uni.setStorageSync('password', password);
 
 				setTimeout(() => {
-					
 					uni.switchTab({
 						url: '/pages/home/home'
 					});
 				}, 1000);
 			}
-			
-			if(res.message ==='暂未注册!'){
+
+			if (res.message === '暂未注册!') {
 				uni.$u.toast('登录失败');
 			}
 		},

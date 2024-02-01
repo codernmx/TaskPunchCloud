@@ -29,11 +29,28 @@ export default {
 	onShow: function (options) {
 		console.log('App Show--->', options);
 		this.updateApp();
+		this.getUserInfo();
 	},
 	onHide: function () {
 		console.log('App Hide');
 	},
 	methods: {
+		async getUserInfo() {
+			try {
+				const userId = uni.getStorageSync('userInfo').userId.toString()
+				if(!userId){
+					return
+				}
+				const res = await uni.$u.http.post('/api/user/user_list', {
+					userId,
+				});
+				console.log(res.data.list[0],'getUserInfo')
+				const userStore = useUserStore();
+				userStore.userInfo = res.data.list[0]
+			} catch (err) {
+				console.log(err);
+			}
+		},
 		updateApp: function () {
 			const updateManager = uni.getUpdateManager();
 			updateManager.onCheckForUpdate(function (res) {
@@ -76,11 +93,4 @@ page {
 	min-height: calc(100% - 56rpx);
 }
 
-.pledge {
-	font-size: 26rpx;
-	color: #ffffff;
-	border-radius: 25rpx;
-	padding: 5rpx 20rpx;
-	background: #4cd964;
-}
 </style>

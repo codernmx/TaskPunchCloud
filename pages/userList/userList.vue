@@ -1,17 +1,29 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 import { onLoad, onShow, onPullDownRefresh } from '@dcloudio/uni-app';
-const indexList = ref([]);
-
+const tableData = ref([]);
+const dataVal = reactive({
+	teamId: '',
+	page: 1,
+	total: 0
+});
 const scrolltolower = () => {
-	loadmore();
+	if (tableData.value.length < dataVal.total) {
+		dataVal.page++;
+		getList();
+	} else {
+		console.log('到底了');
+	}
 };
-const getList = async (teamId) => {
+const getList = async () => {
 	try {
 		const res = await uni.$u.http.post('/api/user/user_list', {
-			teamId
+			teamId: dataVal.teamId,
+			page: dataVal.page,
+			pageSize: 15
 		});
-		indexList.value = res.data.list;
+		tableData.value = [...tableData.value, ...res.data.list];
+		dataVal.total = res.data.total;
 	} catch (err) {
 		console.log(err);
 	}
@@ -21,17 +33,16 @@ const toDetail = ({ userId }) => {
 		url: '/pages/userList/userDetail?userId=' + userId
 	});
 };
-// loadmore();
-
 onLoad((options) => {
-	getList(options.teamId);
+	dataVal.teamId = options.teamId;
+	getList();
 });
 </script>
 
 <template>
 	<view class="u-page">
-		<u-list @scrolltolower="scrolltolower">
-			<u-list-item v-for="(item, index) in indexList" :key="index">
+		<u-list @scrolltolower="scrolltolower" width="100%">
+			<u-list-item v-for="(item, index) in tableData" :key="index">
 				<view class="item-list" @click="toDetail(item)">
 					<u-cell :title="item.realName">
 						<template #icon>
@@ -46,7 +57,11 @@ onLoad((options) => {
 		</u-list>
 	</view>
 </template>
-
+<style>
+.u-cell {
+	width: 90%;
+}
+</style>
 <style scoped lang="scss">
 .u-page {
 	width: 100%;

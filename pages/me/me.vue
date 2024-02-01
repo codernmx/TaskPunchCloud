@@ -34,8 +34,8 @@
 			<view class="text-bold">更多功能</view>
 
 			<MeLink name="团队成员" icon="/static/team.png" @click="toTeam" />
-			<MeLink name="帮助中心" icon="/static/bz.png" />
-			<MeLink name="帮助与反馈" icon="/static/bzhu.png" />
+			<MeLink name="帮助中心" icon="/static/bz.png" @click="toPage('/pages/me/help')"/>
+			<MeLink name="反馈建议" icon="/static/bzhu.png" @click="toPage('/pages/me/feedback')"/>
 		</view>
 
 		<view class="other mt-3 p-2">
@@ -77,6 +77,8 @@ const toSeeting = () => {
 		url: '/pages/me/seeting'
 	});
 };
+
+
 const changeHead = () => {
 	uni.$u.toast('暂无选择文件权限');
 };
@@ -153,8 +155,6 @@ const getStatistics = async () => {
 };
 
 const loginOut = () => {
-	uni.clearStorageSync();
-	console.log(1);
 	uni.redirectTo({
 		url: '/pages/login/login'
 	});

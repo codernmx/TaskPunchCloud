@@ -1,4 +1,5 @@
 import { useUserStore } from '@/store/index';
+let loading = false //定义一个变量来判断是否loading
 const requestInterceptors = (vm) => {
 	/**
 	 * 请求拦截
@@ -13,10 +14,12 @@ const requestInterceptors = (vm) => {
 			if (uni.getStorageSync('token')) {
 				config.header.Authorization = uni.getStorageSync('token')
 			}
-			uni.hideLoading()
-			uni.showLoading({
-				title: '加载中'
-			})
+			if(!loading){
+			    wx.showLoading({
+			    	title: "加载中" 
+			    });
+			    loading = true
+			}
 			// #endif
 			return config
 		}, (config) => // 可使用async await 做异步操作
@@ -47,11 +50,17 @@ const responseInterceptors = (vm) => {
 				return new Promise(() => {})
 			}
 		}
-		uni.hideLoading()
+		if(loading){
+		    wx.hideLoading();
+		    loading = false
+		}
 		return data || {}
 	}, (response) => {
 		console.log(response, 'err')
-		uni.hideLoading()
+		if(loading){
+		    wx.hideLoading();
+		    loading = false
+		}
 		if (response.statusCode === 404) {
 			uni.$u.toast('请求资源不存在')
 		} else if (response.statusCode === 500) {

@@ -14,7 +14,7 @@
 			<!-- <image src="/static/head.png" style="width: 120rpx; height: 120rpx; border-radius: 50%" @click="changeHead"></image> -->
 			<view class="ml-4">
 				<view class="size-40">{{ userStore.userInfo.realName || '暂未设置' }}</view>
-				<view class="mt-1">{{ userStore.userInfo.phone || '暂未设置' }}</view>
+				<view class="mt-1">{{ userStore.userInfo.teamName || '暂未设置' }}</view>
 			</view>
 		</view>
 	</view>
@@ -40,7 +40,7 @@
 
 		<view class="other mt-3 p-2">
 			<view class="text-bold">其他</view>
-			<MeLink name="设置" icon="/static/seeting.png" @click="toSeeting" />
+			<MeLink name="修改密码" icon="/static/seeting.png" @click="toSeeting" />
 			<MeLink name="退出登录" icon="/static/out.png" @click="loginOut" />
 		</view>
 	</view>

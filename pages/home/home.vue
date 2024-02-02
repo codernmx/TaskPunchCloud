@@ -1,62 +1,91 @@
 <template>
-	<view>
-		<image v-if="dataVal.active === 1" src="/static/home_bg.png" style="width: 100%; height: 750rpx"></image>
-		<image v-else src="/static/td.png" style="width: 100%; height: 750rpx"></image>
-		<view class="team-choose">
-			<view v-for="(item, i) in dataVal.team" :key="i" :class="{ active: dataVal.active === item.index, item: true }" @click="tamChange(item)">
+	<view class="position-relative">
+		<image v-if="dataVal.active === 1"
+			   src="http://oss.nmxgzs.cn/cloud-task/%E7%BA%A2%E5%B2%A9%E4%B9%8B%E6%98%9F.png"
+			   style="width: 100%; height: 750rpx"></image>
+		<image v-else-if="dataVal.active === 2"
+			   src="http://oss.nmxgzs.cn/cloud-task/%E7%BA%A2%E5%B2%A9%E6%94%AF%E9%83%A8.png"
+			   style="width: 100%; height: 750rpx"></image>
+		<image v-else src="http://oss.nmxgzs.cn/cloud-task/%E7%BA%A2%E5%B2%A9%E5%85%88%E9%94%8B%E9%98%9F.png"
+			   style="width: 100%; height: 750rpx"></image>
+		<view class="team-choose position-absolute">
+			<view v-for="(item, i) in dataVal.team" :key="i"
+				  :class="{ active: dataVal.active === item.index, item: true }" @click="tamChange(item)">
 				{{ item.name }}
 			</view>
 		</view>
-	</view>
-	<view class="container">
-		<view class="d-flex space-between" style="margin-bottom: 180rpx; padding: 0 13%" :style="{ marginTop: dataVal.active === 1 ? '-190rpx' : '-190rpx' }">
+
+
+		<!--1-3-->
+		<view class="d-flex space-between position-absolute"
+			  style="padding: 0 13%;width: calc(100% - 26%);bottom:60rpx">
 			<view class="d-flex direction-column align-items-center white" @click="toDetail(dataVal.oneTwoThree[1])">
 				<view class="position-relative">
-					<image src="../../static/head/two.png" style="width: 115rpx; height: 135rpx; position: absolute" mode=""></image>
+					<image src="../../static/head/two.png" style="width: 115rpx; height: 135rpx; position: absolute"
+						   mode=""></image>
 					<image
-						:src="dataVal.active === 1 ? dataVal.oneTwoThree[1].avatarUrl : dataVal.oneTwoThree[1].imgUrl"
-						style="height: 105rpx; width: 108rpx; margin: 27rpx 20rpx 0 5rpx; border-radius: 50%"
+						:src="dataVal.oneTwoThree[1].avatarUrl"
+						style="height: 105rpx; width: 108rpx; margin: 28rpx 20rpx 0 5rpx; border-radius: 50%"
 					></image>
 				</view>
-				<view class="mt-1">{{ dataVal.active === 1 ? dataVal.oneTwoThree[1].realName : dataVal.oneTwoThree[1].teamName }}</view>
-				<view>{{ dataVal.active === 1 ? dataVal.oneTwoThree[1].taskNum : dataVal.oneTwoThree[1].total }}</view>
+				<view class="mt-1">
+					{{ dataVal.oneTwoThree[1].realName }}
+				</view>
+				<view class="size-20">先锋值{{dataVal.oneTwoThree[1].taskNum }}</view>
+				<view class="size-20">打卡数{{dataVal.oneTwoThree[1].taskNum }}</view>
 			</view>
-			<view style="margin-top: -50rpx" class="d-flex direction-column align-items-center white" @click="toDetail(dataVal.oneTwoThree[0])">
+			<view style="margin-top: -50rpx" class="d-flex direction-column align-items-center white"
+				  @click="toDetail(dataVal.oneTwoThree[0])">
 				<view class="position-relative">
-					<image src="../../static/head/one.png" style="width: 120rpx; height: 160rpx; position: absolute" mode=""></image>
+					<image src="../../static/head/one.png" style="width: 120rpx; height: 160rpx; position: absolute"
+						   mode=""></image>
 					<image
-						:src="dataVal.active === 1 ? dataVal.oneTwoThree[0].avatarUrl : dataVal.oneTwoThree[0].imgUrl"
-						style="height: 110rpx; width: 110rpx; margin: 50rpx 20rpx 0 5rpx; border-radius: 50%"
+						:src="dataVal.oneTwoThree[0].avatarUrl"
+						style="height: 110rpx; width: 114rpx; margin: 50rpx 20rpx 0 5rpx; border-radius: 50%"
 					></image>
 				</view>
 
-				<view class="mt-1">{{ dataVal.active === 1 ? dataVal.oneTwoThree[0].realName : dataVal.oneTwoThree[0].teamName }}</view>
-				<view>{{ dataVal.active === 1 ? dataVal.oneTwoThree[0].taskNum : dataVal.oneTwoThree[0].total }}</view>
+				<view class="mt-1">
+					{{  dataVal.oneTwoThree[0].realName}}
+				</view>
+				<view class="size-20">先锋值{{dataVal.oneTwoThree[0].taskNum }}</view>
+				<view class="size-20">打卡数{{dataVal.oneTwoThree[0].taskNum }}</view>
 			</view>
 
 			<view class="d-flex direction-column align-items-center white" @click="toDetail(dataVal.oneTwoThree[2])">
 				<view class="position-relative">
-					<image src="../../static/head/three.png" style="width: 120rpx; height: 140rpx; margin-top: 20rpx; position: absolute" mode=""></image>
+					<image src="../../static/head/three.png"
+						   style="width: 120rpx; height: 140rpx; margin-top: 20rpx; position: absolute" mode=""></image>
 					<image
-						:src="dataVal.active === 1 ? dataVal.oneTwoThree[2].avatarUrl : dataVal.oneTwoThree[2].imgUrl"
-						style="height: 110rpx; width: 108rpx; margin: 48rpx 20rpx 0 6rpx; border-radius: 50%"
+						:src="dataVal.oneTwoThree[2].avatarUrl"
+						style="height: 110rpx; width: 110rpx; margin: 48rpx 20rpx 0 6rpx; border-radius: 50%"
 					></image>
 				</view>
-				<view class="mt-1">{{ dataVal.active === 1 ? dataVal.oneTwoThree[2].realName : dataVal.oneTwoThree[2].teamName }}</view>
-				<view>{{ dataVal.active === 1 ? dataVal.oneTwoThree[2].taskNum : dataVal.oneTwoThree[2].total }}</view>
+				<view class="mt-1">
+					{{  dataVal.oneTwoThree[2].realName }}
+				</view>
+				<view class="size-20">先锋值{{dataVal.oneTwoThree[2].taskNum }}</view>
+				<view class="size-20">打卡数{{dataVal.oneTwoThree[2].taskNum }}</view>
 			</view>
 		</view>
+	</view>
+	<view class="container">
+		<!--排名4-10-->
 		<view class="box">
 			<view v-for="(item, i) in dataVal.tableList" :key="i" class="d-flex space-between mb-2">
 				<view class="d-flex align-items-center" @click="toDetail(item)">
 					<view class="index">{{ i + 4 }}</view>
-					<image :src="dataVal.active === 1 ? item.avatarUrl : item.imgUrl" style="height: 80rpx; width: 80rpx; margin: 0 20rpx; border-radius: 50%"></image>
-					<view>{{ dataVal.active === 1 ? item.realName : item.teamName }}</view>
+					<image :src="item.avatarUrl"
+						   style="height: 80rpx; width: 80rpx; margin: 0 20rpx; border-radius: 50%"></image>
+					<view>{{ item.realName }}</view>
 				</view>
-				<view>{{ dataVal.active === 1 ? item.taskNum : item.total }}</view>
+				<view>
+					<view class="size-24">先锋值<text class="size-28" style="color: #F12F2F">{{ item.taskNum }}</text></view>
+					<view class="size-20" style="color: #9B9B9B;text-align: right">打卡数{{ item.taskNum }}</view>
+				</view>
 			</view>
 			<view class="d-flex space-between mt-2 size-24 pl-1" @click="more">
-				查看更多
+				<view style="color: #999999">查看更多</view>
 				<u-icon name="arrow-right" size="18"></u-icon>
 			</view>
 		</view>
@@ -68,23 +97,28 @@ import { reactive, computed, ref, onMounted, getCurrentInstance } from 'vue';
 import { onLoad, onShow, onPullDownRefresh } from '@dcloudio/uni-app';
 import { useUserStore } from '@/store/index';
 
-const userStore = useUserStore();
+const userStore = useUserStore ();
 import config from '@/common/config';
 
 const baseUrl = config.baseUrl;
 
-const dataVal = reactive({
+const dataVal = reactive ({
 	tableList: [],
 	oneTwoThree: [{}, {}, {}],
 	team: [
 		{
 			index: 1,
-			name: '个人榜',
+			name: '红岩之星',
 			score: 232
 		},
 		{
 			index: 2,
-			name: '团队榜',
+			name: '红岩支部',
+			score: 220
+		},
+		{
+			index: 3,
+			name: '红岩先锋队',
 			score: 220
 		}
 	],
@@ -93,102 +127,104 @@ const dataVal = reactive({
 
 const getList = async () => {
 	try {
-		const res = await uni.$u.http.post('/api/user/task_user_rank', {
+		const res = await uni.$u.http.post ('/api/user/task_user_rank', {
 			// userId: uni.getStorageSync('userInfo').userId,
 			type: 'taskNum'
 		});
-		dataVal.oneTwoThree = res.data.list.slice(0, 3);
-		if (dataVal.oneTwoThree.length < 3) {
-			for (let i = 0; i <= 3 - dataVal.oneTwoThree.length; i++) {
-				dataVal.oneTwoThree.push({});
+		dataVal.oneTwoThree = res.data.list.slice (0, 3);
+		if ( dataVal.oneTwoThree.length < 3 ) {
+			for (let i = 0; i <= 3 - dataVal.oneTwoThree.length; i ++) {
+				dataVal.oneTwoThree.push ({});
 			}
 		}
-		console.log(dataVal.oneTwoThree, '5656');
-		dataVal.tableList = res.data.list.slice(3,10);
+		console.log (dataVal.oneTwoThree, '5656');
+		dataVal.tableList = res.data.list.slice (3, 10);
 	} catch (err) {
-		console.log(err);
+		console.log (err);
 	}
 };
 
 const toDetail = (item) => {
-	if (item.userId) {
-		uni.navigateTo({
+	if ( item.userId ) {
+		uni.navigateTo ({
 			url: '/pages/userList/userDetail?userId=' + item.userId
 		});
 	} else {
 		// uni.$u.toast('团队暂不支持');
-		if(!item.teamId){
+		if ( !item.teamId ) {
 			return
 		}
-		uni.navigateTo({
+		uni.navigateTo ({
 			url: '/pages/userList/userList?teamId=' + item.teamId
 		});
 	}
 };
 const more = () => {
-	if (dataVal.active === 1) {
-		uni.navigateTo({
+	if ( dataVal.active === 1 ) {
+		uni.navigateTo ({
 			url: '/pages/home/more'
 		});
 	} else {
-		uni.navigateTo({
+		uni.navigateTo ({
 			url: '/pages/home/more-team'
 		});
 	}
 };
 const getTeamList = async () => {
 	try {
-		const res = await uni.$u.http.post('/api/user/task_group_rank', {});
+		const res = await uni.$u.http.post ('/api/user/task_group_rank', {});
 		// dataVal.tableList = res.data.list;
-		
-		res.data.list = res.data.list.filter(item=>item.teamName)
 
-		dataVal.oneTwoThree = res.data.list.slice(0, 3);
-		if (dataVal.oneTwoThree.length < 3) {
-			for (let i = 0; i <= 3 - dataVal.oneTwoThree.length; i++) {
-				dataVal.oneTwoThree.push({});
+		res.data.list = res.data.list.filter (item => item.teamName)
+
+		dataVal.oneTwoThree = res.data.list.slice (0, 3);
+		if ( dataVal.oneTwoThree.length < 3 ) {
+			for (let i = 0; i <= 3 - dataVal.oneTwoThree.length; i ++) {
+				dataVal.oneTwoThree.push ({});
 			}
 		}
-		dataVal.tableList = res.data.list.slice(3,10);
+		dataVal.tableList = res.data.list.slice (3, 10);
 	} catch (err) {
-		console.log(err);
+		console.log (err);
 	}
 };
 
 const tamChange = (item) => {
 	dataVal.active = item.index;
-	if (dataVal.active === 2) {
-		getTeamList();
-	} else {
-		getList();
-	}
+	getList ();
+	// if ( dataVal.active === 2 ) {
+	// 	getTeamList ();
+	// } else {
+	// 	getList ();
+	// }
 };
 // 下拉刷新
-onPullDownRefresh(() => {});
+onPullDownRefresh (() => {
+});
 
-onShow(() => {
-	if(uni.getStorageSync('password') ==='123456'){
-		
-		uni.showModal({
+onShow (() => {
+	if ( uni.getStorageSync ('password') === '123456' ) {
+
+		uni.showModal ({
 			title: '温馨提示',
 			content: '请修改初始密码',
 			success: function (res) {
-				if (res.confirm) {
-					uni.navigateTo({
-						url:'/pages/me/seeting'
+				if ( res.confirm ) {
+					uni.navigateTo ({
+						url: '/pages/me/seeting'
 					})
-				} else if (res.cancel) {
-					console.log('用户点击取消');
+				} else if ( res.cancel ) {
+					console.log ('用户点击取消');
 				}
 			}
 		});
-		
+
 	}
 });
-onLoad((option) => {
-	getList();
+onLoad ((option) => {
+	getList ();
 
-	setTimeout(() => {
+	setTimeout (() => {
 		// uni.setTabBarItem({
 		// 	index: 1,
 		// 	text: '审核',
@@ -205,44 +241,45 @@ onLoad((option) => {
 
 <style lang="less" scoped>
 .team-choose {
-	width: calc(100% - 92px);
+
+	width: calc(100% - 184rpx);
 	border-radius: 158rpx;
 	height: 72rpx;
-	margin: -448rpx 92rpx 230rpx 92rpx;
-	//margin: 0 46px;
-	//background: rgba(255, 30, 30, 0.35);
-	background: black;
+	margin: 0 92rpx 0 92rpx;
+	top: 300rpx;
+	background: rgba(255, 227, 127, 0.35);
 	display: flex;
 
 	.active {
 		color: #ff3e3e !important;
-		background: #ffffff;
+		background: linear-gradient(180deg, #FAD45E 0%, #F99C47 100%);
 		font-weight: 600 !important;
 	}
 
 	.item {
 		width: 50%;
 		height: 100%;
-		border-radius: 79px;
+		border-radius: 158rpx;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 16px;
+		font-size: 30rpx;
 		font-family: PingFang SC, PingFang SC;
 		font-weight: 400;
 		color: #ffffff;
+
 	}
 }
 
 .container {
 	background: #f5f5f5;
-	min-height: 90vh;
+	min-height: 60vh;
 	padding: 0 20rpx;
 
 	.box {
 		position: relative;
 		z-index: 66;
-		margin-top: -120rpx;
+		margin-top: -40rpx;
 		padding: 20rpx;
 		border-radius: 20rpx;
 		background: linear-gradient(180deg, #ffd5be 0%, rgba(255, 255, 255, 0) 100%);

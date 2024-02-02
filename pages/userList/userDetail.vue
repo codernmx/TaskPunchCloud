@@ -51,8 +51,8 @@ const getList = async () => {
 			...dataVal.params
 		});
 		dataVal.info = res.data;
-		
-		console.log(dataVal.info.list.length,'kl')
+
+		console.log(dataVal.info,'kl')
 	} catch (err) {
 		console.log(err);
 	}
@@ -129,6 +129,7 @@ const getOneImg = computed(() => (img) => {
 					</view>
 				</view>
 			</view>
+			<u-empty mode="data" v-if="dataVal.info.list.length == 0"></u-empty>
 		</view>
 		<u-list @scrolltolower="scrolltolower">
 			<u-list-item v-for="(item, index) in dataVal.info.list" :key="index">
@@ -158,8 +159,6 @@ const getOneImg = computed(() => (img) => {
 				</view>
 			</u-list-item>
 		</u-list>
-
-		<!-- <u-empty mode="data" v-if="dataVal.info.list.length == 0"></u-empty> -->
 	</view>
 </template>
 

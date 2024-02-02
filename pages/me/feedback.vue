@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<view class="item">
+		<!-- <view class="item">
 			<view>
 				<text class="text-bold">联系与合作 </text>
 				<text class="size-24">(工作时间:9:00-17:00)</text>
@@ -10,7 +10,7 @@
 				<text class="text-bold">电话：</text>
 				<text>18888888888</text>
 			</view>
-		</view>
+		</view> -->
 		
 		<view class="item mt-3">
 			<view>

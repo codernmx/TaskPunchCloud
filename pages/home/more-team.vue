@@ -8,7 +8,21 @@
 		</view>
 	</view>
 	<view class="container">
-		<view class="box" style="height: 80vh;overflow: scroll;">
+		<view class="d-flex space-between mb-4 box">
+			<view class="d-flex align-items-center" @click="toDetail(item)">
+				<view class="index">{{ '-' }}</view>
+				<image src="https://www.360dk.online/api/user/get_img?path=1706780813.9215033.png"
+					   style="height: 80rpx; width: 80rpx; margin: 0 20rpx;border-radius: 50%;"></image>
+				<view>我的排名</view>
+			</view>
+			<view>
+				<view class="size-24">先锋值
+					<text class="size-28" style="color: #F12F2F">{{ 200 }}</text>
+				</view>
+				<view class="size-20" style="color: #9B9B9B;text-align: right">打卡数 {{ 100 }}</view>
+			</view>
+		</view>
+		<view class="box" style="height: 65vh;overflow: scroll;">
 			<view v-for="(item, i) in dataVal.tableList" :key="i" class="d-flex space-between mb-2">
 				<view class="d-flex align-items-center" @click="toDetail(item)">
 					<view class="index">{{ i + 1 }}</view>
@@ -95,7 +109,9 @@ const toDetail = (item) => {
 			url: '/pages/userList/userDetail?userId=' + item.userId
 		});
 	} else {
-		uni.$u.toast('团队暂不支持');
+		uni.navigateTo ({
+			url: '/pages/userList/userList?teamId=' + item.teamId
+		});
 	}
 };
 // 下拉刷新

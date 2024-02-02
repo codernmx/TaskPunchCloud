@@ -2,23 +2,46 @@
 	<view class="position-relative">
 		<image src="/static/task_bg.png" style="width: 100%; height: 100vh;"></image>
 		<view class="team-choose">
-			<view v-for="(item, i) in dataVal.team" :key="i" :class="{ active: dataVal.active === item.index, item: true }" @click="tamChange(item)">
+			<view v-for="(item, i) in dataVal.team" :key="i"
+				  :class="{ active: dataVal.active === item.index, item: true }" @click="tamChange(item)">
 				{{ item.name }}
 			</view>
 		</view>
 	</view>
 	<view class="container">
-		<view class="box" style="height: 80vh;overflow: scroll;">
+		<view class="d-flex space-between mb-4 box">
+			<view class="d-flex align-items-center" @click="toDetail(item)">
+				<view class="index">{{ '-' }}</view>
+				<image src="https://www.360dk.online/api/user/get_img?path=1706780813.9215033.png"
+					   style="height: 80rpx; width: 80rpx; margin: 0 20rpx;border-radius: 50%;"></image>
+				<view>我的排名</view>
+			</view>
+			<view>
+				<view class="size-24">先锋值
+					<text class="size-28" style="color: #F12F2F">{{ 200 }}</text>
+				</view>
+				<view class="size-20" style="color: #9B9B9B;text-align: right">打卡数 {{ 100 }}</view>
+			</view>
+		</view>
+
+
+		<view class="box" style="height: 65vh;overflow: scroll;">
 			<view v-for="(item, i) in dataVal.tableList" :key="i" class="d-flex space-between mb-2">
 				<view class="d-flex align-items-center" @click="toDetail(item)">
 					<view class="index">{{ i + 1 }}</view>
-					<image :src="item.avatarUrl" style="height: 80rpx; width: 80rpx; margin: 0 20rpx;border-radius: 50%;"></image>
+					<image :src="item.avatarUrl"
+						   style="height: 80rpx; width: 80rpx; margin: 0 20rpx;border-radius: 50%;"></image>
 					<view>{{ item.realName }}</view>
 				</view>
 				<view>
-					<text v-if="dataVal.active === 1">{{ item.dayNum }}</text>
-					<text v-if="dataVal.active === 2">{{ item.weekNum }}</text>
-					<text v-if="dataVal.active === 3">{{ item.taskNum }}</text>
+					<view class="size-24">先锋值
+						<text class="size-28" style="color: #F12F2F">{{ item.teamId }}</text>
+					</view>
+					<view class="size-20" style="color: #9B9B9B;text-align: right">打卡数
+						<text v-if="dataVal.active === 1">{{ item.dayNum }}</text>
+						<text v-if="dataVal.active === 2">{{ item.weekNum }}</text>
+						<text v-if="dataVal.active === 3">{{ item.taskNum }}</text>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -30,12 +53,12 @@ import { reactive, computed, ref, onMounted, getCurrentInstance } from 'vue';
 import { onLoad, onShow, onPullDownRefresh } from '@dcloudio/uni-app';
 import { useUserStore } from '@/store/index';
 
-const userStore = useUserStore();
+const userStore = useUserStore ();
 import config from '@/common/config';
 
 const baseUrl = config.baseUrl;
 
-const dataVal = reactive({
+const dataVal = reactive ({
 	tableList: [],
 	team: [
 		{
@@ -60,50 +83,52 @@ const dataVal = reactive({
 const getList = async () => {
 	try {
 		let type = null;
-		if (dataVal.active === 1) {
+		if ( dataVal.active === 1 ) {
 			type = 'dayNum';
-		} else if (dataVal.active === 2) {
+		} else if ( dataVal.active === 2 ) {
 			type = 'weekNum';
 		} else {
 			type = 'taskNum';
 		}
-		const res = await uni.$u.http.post('/api/user/task_user_rank', {
+		const res = await uni.$u.http.post ('/api/user/task_user_rank', {
 			// userId: uni.getStorageSync('userInfo').userId,
 			type
 		});
 		dataVal.tableList = res.data.list;
 	} catch (err) {
-		console.log(err);
+		console.log (err);
 	}
 };
 const getTeamList = async () => {
 	try {
-		const res = await uni.$u.http.post('/api/user/task_group_rank', {});
+		const res = await uni.$u.http.post ('/api/user/task_group_rank', {});
 		dataVal.tableList = res.data.list;
 	} catch (err) {
-		console.log(err);
+		console.log (err);
 	}
 };
 
 const tamChange = (item) => {
 	dataVal.active = item.index;
-	getList();
+	getList ();
 };
 const toDetail = (item) => {
-	if (item.userId) {
-		uni.navigateTo({
+	if ( item.userId ) {
+		uni.navigateTo ({
 			url: '/pages/userList/userDetail?userId=' + item.userId
 		});
 	} else {
-		uni.$u.toast('团队暂不支持');
+		uni.$u.toast ('团队暂不支持');
 	}
 };
 // 下拉刷新
-onPullDownRefresh(() => {});
+onPullDownRefresh (() => {
+});
 
-onShow(() => {});
-onLoad((option) => {
-	getList();
+onShow (() => {
+});
+onLoad ((option) => {
+	getList ();
 });
 </script>
 
@@ -152,7 +177,7 @@ onLoad((option) => {
 		background: linear-gradient(180deg, #ffd5be 0%, rgba(255, 255, 255, 0) 100%);
 
 		.index {
-			width: 38rpx;
+			min-width: 38rpx;
 			height: 38rpx;
 			background: #ffffff;
 			border-radius: 50%;

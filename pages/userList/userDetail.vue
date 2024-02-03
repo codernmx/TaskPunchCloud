@@ -51,8 +51,6 @@ const getList = async () => {
 			...dataVal.params
 		});
 		dataVal.info = res.data;
-
-		console.log(dataVal.info,'kl')
 	} catch (err) {
 		console.log(err);
 	}
@@ -108,7 +106,7 @@ const getOneImg = computed(() => (img) => {
 				<view class="info">
 					<view class="top">
 						<view style="margin-left: 20px">
-							<up-avatar :src="dataVal.user.avatarUrl" shape="square"></up-avatar>
+							<up-avatar :src="dataVal.user.avatarUrl"></up-avatar>
 						</view>
 						<view class="name">{{ dataVal.user.realName || '暂未设置' }}</view>
 						<view class="type">{{ dataVal.user.teamName || '暂未设置' }}</view>
@@ -133,21 +131,24 @@ const getOneImg = computed(() => (img) => {
 		</view>
 		<u-list @scrolltolower="scrolltolower">
 			<u-list-item v-for="(item, index) in dataVal.info.list" :key="index">
-				<view class="item-list" @click="toDetail(item.clockId)">
-					<view class="top">
-						<image :src="getOneImg(item.img)" style="width: 60px; height: 60px; margin-right: 10px"></image>
+				<view class="item-list">
+					<view class="top" @click="toDetail(item.clockId)">
+						<image :src="getOneImg(item.img)" style="width: 60px; height: 70px; margin-right: 10px" mode="aspectFill"></image>
 						<view style="width: calc(100% - 60px)">
 							<view class="title-1">{{ item.typeName }}</view>
 							<view class="title-2">{{ item.location }}</view>
 							<view class="title-2">打卡时间：{{ item.completeTime }}</view>
+							<view class="title-2">先锋值：<text>{{ item.score + item.diffScore }}</text></view>
 						</view>
 					</view>
 					<view class="bottom size-26">
 						<view class="bottom-item">
-							<view class="t-title d-flex align-items-center" @click.stop="zanAndShare(item.clockId, 1)">
-								<u-icon name="share" size="20"></u-icon>
-								{{ item.shareNum }}
-							</view>
+							<button class="share" open-type="share" style="background:none;border: none;padding: 0">
+								<view class="t-title d-flex align-items-center" >
+									<u-icon name="share" size="20"></u-icon>
+									<!--{{ item.shareNum }}-->
+								</view>
+							</button>
 						</view>
 						<view class="bottom-item">
 							<view class="t-title d-flex align-items-center" @click.stop="zanAndShare(item.clockId, 2)">
@@ -163,6 +164,14 @@ const getOneImg = computed(() => (img) => {
 </template>
 
 <style scoped lang="scss">
+button {
+	margin: unset;
+	padding: unset;
+}
+button:after {
+	border: unset;
+}
+
 .u-page {
 	width: 100%;
 	height: 100vh;
@@ -230,29 +239,29 @@ const getOneImg = computed(() => (img) => {
 		}
 	}
 	.item-list {
-		width: calc(100% - 30px);
-		margin: 10px 15px;
+		width: calc(100% - 60rpx);
+		margin: 20rpx 30rpx;
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		height: 118px;
-		border-radius: 10px;
+		height: 256rpx;
+		border-radius: 20rpx;
 		background: #ffffff;
 		.top {
 			display: flex;
 			width: calc(100% - 40px);
-			margin: 10px 20px 0 20px;
-			height: 60px;
+			margin: 20rpx 40rpx 0 40rpx;
+			height: 140rpx;
 			.title-1 {
 				width: 100%;
-				font-size: 14px;
+				font-size: 28rpx;
 				font-family: PingFang SC, PingFang SC;
 				font-weight: 600;
 				color: #333333;
-				margin-bottom: 5px;
+				margin-bottom: 10rpx;
 			}
 			.title-2 {
-				font-size: 11px;
+				font-size: 22rpx;
 				font-family: PingFang SC, PingFang SC;
 				font-weight: 400;
 				color: #999999;
@@ -260,10 +269,10 @@ const getOneImg = computed(() => (img) => {
 		}
 		.bottom {
 			display: flex;
-			width: calc(100% - 40px);
-			margin: 10px 20px 0 20px;
+			width: calc(100% - 80rpx);
+			margin: 20rpx 40rpx 0 40rpx;
 			border-top: 1px solid #eeeeee;
-			height: 37px;
+			height: 74rpx;
 			.bottom-item {
 				width: 50%;
 				display: flex;

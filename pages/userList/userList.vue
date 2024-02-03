@@ -35,6 +35,9 @@ const toDetail = ({ userId }) => {
 };
 onLoad((options) => {
 	dataVal.teamId = options.teamId;
+	uni.setNavigationBarTitle({
+		title:options.teamName
+	})
 	getList();
 });
 </script>

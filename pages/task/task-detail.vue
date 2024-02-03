@@ -4,6 +4,7 @@
 			<image src="../../static/detail.png" style="width: 100%; height: 250rpx" mode=""></image>
 			<image src="../../static/cloud.png" mode="" class="position-absolute" style="z-index: 3; top: 30rpx; right: 50rpx; width: 150rpx; height: 150rpx"></image>
 
+			<view class="position-absolute white" style="bottom: 160rpx;left: 30rpx;">{{ dataVal.info.typeName }}</view>
 			<view class="position-absolute white" style="bottom: 120rpx;left: 30rpx;">打卡时间：{{ dataVal.info.completeTime }}</view>
 		</view>
 		<view class="main position-relative">
@@ -19,12 +20,15 @@
 			</view>
 
 			<view class="intro">
+				<view class="text-bold">先锋值</view>
+				<view class="mt-1" style="color: #F12F2F">{{dataVal.info.score + dataVal.info.diffScore}}</view>
+				<u-divider text=""></u-divider>
 				<view class="text-bold">参与者</view>
 				<view class="mt-1">{{dataVal.user.realName}}</view>
 				<u-divider text=""></u-divider>
 				<view class="text-bold">任务照片</view>
 				<view>
-					<image v-for="item in dataVal.info.imgArr" :src="item" mode="" style="width: 120rpx; height: 120rpx; margin: 10rpx 10rpx 10rpx 0" @click="previewImg(item)"></image>
+					<image v-for="item in dataVal.info.imgArr" :src="item" mode="aspectFill" style="width: 120rpx; height: 120rpx; margin: 10rpx 10rpx 10rpx 0" @click="previewImg(item)"></image>
 				</view>
 				<u-divider text=""></u-divider>
 				<view class="text-bold">定位地址</view>
@@ -49,7 +53,10 @@ const baseUrl = config.baseUrl;
 
 const dataVal = reactive({
 	userInfo: {},
-	info: {},
+	info: {
+		score:0,
+		diffScore:0,
+	},
 	user: {},
 });
 

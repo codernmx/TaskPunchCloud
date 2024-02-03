@@ -68,8 +68,9 @@ const toTask = (type) => {
 	});
 };
 const toTeam = () => {
+	const {teamId,teamName} = uni.getStorageSync('userInfo')
 	uni.navigateTo({
-		url: '/pages/userList/userList?teamId='+uni.getStorageSync('userInfo').teamId
+		url: '/pages/userList/userList?teamId='+teamId+'&teamName='+teamName
 	});
 };
 const toSeeting = () => {
@@ -173,7 +174,7 @@ onLoad((option) => {});
 }
 .container {
 	background: #f5f5f5;
-	height: 100vh;
+	height: 92vh;
 	padding: 0 30rpx;
 
 	.task {

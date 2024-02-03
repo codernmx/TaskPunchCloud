@@ -3,7 +3,7 @@
 		<view class="position-absolute logo"></view>
 		<image src="/static/bg.jpg" mode="heightFix" style="opacity: 0.6; width: 100%; height: 100%; position: absolute; margin-left: -60rpx"></image>
 		<view class="position-absolute login-form">
-			<up-input placeholder="请输入账号" border="surround" v-model="dataVal.form.username" custom-style="background:#ffffff"></up-input>
+			<up-input placeholder="请输入账号" border="surround" clearable v-model="dataVal.form.username" custom-style="background:#ffffff"></up-input>
 			<up-input placeholder="请输入密码" border="surround" :password="password" clearable v-model="dataVal.form.password" custom-style="margin-top:30rpx;background:#ffffff">
 				<template #suffix>
 					<u-icon name="eye-fill" size="22" v-if="password" @click="password = !password"></u-icon>
@@ -36,8 +36,8 @@
 
 			<up-input v-if="register" placeholder="请输入手机号" border="surround" v-model="dataVal.form.phone" custom-style="margin-top:30rpx;background:#ffffff"></up-input>
 			<up-input v-if="register" placeholder="请输入真实姓名" border="surround" v-model="dataVal.form.realName" custom-style="margin-top:30rpx;background:#ffffff"></up-input>
-			<up-button type="error" @click="$u.debounce(login, 700)" :text="!register ? '登录' : '注册'" custom-style="margin-top:30rpx;"></up-button>
-			<view class="mt-2" style="text-align: right" @click="register = !register">{{ !register ? '去注册' : '去登录' }}</view>
+			<up-button type="error" @click="$u.debounce(login, 100)" :text="!register ? '登录' : '注册'" custom-style="margin-top:30rpx;"></up-button>
+			<!--<view class="mt-2" style="text-align: right" @click="toRegister">{{ !register ? '去注册' : '去登录' }}</view>-->
 		</view>
 	</view>
 </template>
@@ -67,6 +67,9 @@ onShow(() => {
 	// 	});
 	// }
 });
+const toRegister=()=>{
+	register.value = !register.value
+}
 const empty = () => {};
 const changeCompany = (val) => {
 	const obj = dataVal.comanyLableAll.find((item) => item.teamName == val);
@@ -124,7 +127,8 @@ const login = () => {
 			let url = register.value ? '/api/user/register' : '/api/user/wx_login';
 			const res = await uni.$u.http.post(url, {
 				code,
-				...dataVal.form
+				...dataVal.form,
+				isWx:true
 			});
 
 			if (register.value && res.code === 200) {
@@ -136,6 +140,7 @@ const login = () => {
 				userStore.userInfo = res.data.userInfo;
 				userStore.token = res.data.token;
 				uni.setStorageSync('userInfo', res.data.userInfo);
+				uni.setStorageSync('userId', res.data.userInfo.userId);
 				uni.setStorageSync('token', res.data.token);
 
 				uni.setStorageSync('username', username);
@@ -145,7 +150,7 @@ const login = () => {
 					uni.switchTab({
 						url: '/pages/home/home'
 					});
-				}, 1000);
+				}, 500);
 			}
 
 			if (res.message === '暂未注册!') {

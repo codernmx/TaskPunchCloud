@@ -1,3 +1,10 @@
+<!--
+ * @Author: Maisy
+ * @Date: 2024-02-01 21:44:03
+ * @LastEditTime: 2024-02-03 14:34:04
+ * @LastEditors: Maisy
+ * @Description: 
+-->
 <template>
 	<view class="container">
 		<up-input placeholder="请输入原密码" border="surround" v-model="old"></up-input>
@@ -66,14 +73,7 @@ const toTask = (type) => {
 		url
 	});
 };
-const toTeam = () => {
-	uni.navigateTo({
-		url: '/pages/userList/userList'
-	});
-};
-const changeHead = () => {
-	uni.$u.toast('暂无选择文件权限');
-};
+
 const dataVal = reactive({
 	userInfo: {}
 });

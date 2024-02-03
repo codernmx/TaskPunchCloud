@@ -44,9 +44,11 @@ export default {
 				const res = await uni.$u.http.post('/api/user/user_list', {
 					userId,
 				});
-				console.log(res.data.list[0],'getUserInfo')
 				const userStore = useUserStore();
 				userStore.userInfo = res.data.list[0]
+
+				uni.setStorageSync('userInfo', res.data.list[0]);
+				uni.setStorageSync('userId', res.data.list[0].userId);
 			} catch (err) {
 				console.log(err);
 			}

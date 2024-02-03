@@ -35,12 +35,6 @@ const submit = async () => {
 		});
 };
 
-const toTeam = () => {
-	uni.navigateTo({
-		url: '/pages/userList/userList'
-	});
-};
-
 const dataVal = reactive({
 	userInfo: {}
 });

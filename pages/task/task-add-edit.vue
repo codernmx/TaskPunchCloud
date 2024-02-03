@@ -43,20 +43,25 @@
 				</u-form-item> -->
 				<u-form-item label="" prop="userInfo.img" borderBottom ref="item1">
 					<view style="width: 100%; margin-bottom: 10px; font-size: 15px">上传任务照片</view>
-					<u-upload :fileList="fileList" @afterRead="afterRead" @delete="deletePic" name="1" multiple :maxCount="9"></u-upload>
+					<u-upload :fileList="fileList" @afterRead="afterRead" @delete="deletePic" name="1" multiple
+							  :maxCount="9"></u-upload>
 				</u-form-item>
 				<u-form-item label="" prop="userInfo.detail" borderBottom ref="item1">
 					<view style="width: 100%; margin-bottom: 10px; font-size: 15px">编辑任务详情</view>
-					<u--textarea v-model="form.userInfo.detail" height="150" maxlength="3000" placeholder="请输入内容"></u--textarea>
+					<u--textarea v-model="form.userInfo.detail" height="150" maxlength="3000"
+								 placeholder="请输入内容"></u--textarea>
 				</u-form-item>
 				<u-form-item label="定位" prop="userInfo.address" borderBottom ref="item1">
 					<view class="d-flex align-items-center">
-						<view style="width: 100%; font-size: 15px" @click="chooseAddress">{{ form.userInfo.location }}</view>
+						<view style="width: 100%; font-size: 28rpx" @click="chooseAddress">{{ form.userInfo.location
+							}}
+						</view>
 						<view @click="showAddress = true" style="width: 120rpx;">重选</view>
 					</view>
 				</u-form-item>
 				<u-form-item>
-					<up-button type="error" text="打卡" @click="$u.debounce(submit, 700)"></up-button>
+					<up-button type="error" customStyle="border-radius:20rpx" text="打卡"
+							   @click="$u.debounce(submit, 700)"></up-button>
 				</u-form-item>
 			</u--form>
 			<u-action-sheet
@@ -106,33 +111,35 @@ import { reactive, computed, ref, onMounted, getCurrentInstance } from 'vue';
 import { onLoad, onShow, onPullDownRefresh } from '@dcloudio/uni-app';
 import { useUserStore } from '@/store/index';
 import { formatDate } from '@/util/util';
-const userStore = useUserStore();
+
+const userStore = useUserStore ();
 import config from '@/common/config';
+
 const baseUrl = config.baseUrl;
 
 import QQMapWX from '@/util/libs/qqmap-wx-jssdk';
 // var QQMapWX = require('@/util/libs/qqmap-wx-jssdk');
 // 实例化API核心类
-const qqmapsdk = new QQMapWX({
+const qqmapsdk = new QQMapWX ({
 	key: 'PN3BZ-YPOKC-QYR22-A4MYM-BVUJZ-EPFQF' // 必填
 });
-const showSex = ref(false);
-const showGt = ref(false);
-const showAddress = ref(false);
-const form = reactive({
+const showSex = ref (false);
+const showGt = ref (false);
+const showAddress = ref (false);
+const form = reactive ({
 	userInfo: {
 		location: '',
 		detail: '', //任务详情
 		participant: null, //多个逗号分割
 		status: 1,
-		completeTime: formatDate(new Date()), //完成时间
+		completeTime: formatDate (new Date ()), //完成时间
 		type: null //任务类别
 	}
 });
 
-const actions = ref([]);
-const actionsGtAc = ref([]);
-const addressActions = ref([]);
+const actions = ref ([]);
+const actionsGtAc = ref ([]);
+const addressActions = ref ([]);
 
 const rules = {
 	'userInfo.name': {
@@ -149,45 +156,45 @@ const rules = {
 		trigger: ['blur', 'change']
 	}
 };
-const dataVal = reactive({
+const dataVal = reactive ({
 	userInfo: {},
 	startAddress: {}
 });
-const fileList = ref([]);
+const fileList = ref ([]);
 
 // 删除图片
 const deletePic = (event) => {
-	fileList.value.splice(event.index, 1);
+	fileList.value.splice (event.index, 1);
 };
 
 // 新增图片
 const afterRead = async (event) => {
 	// 当设置 mutiple 为 true 时, file 为数组格式，否则为对象格式
-	let lists = [].concat(event.file);
+	let lists = [].concat (event.file);
 	let fileListLen = fileList.value.length;
-	lists.map((item) => {
-		fileList.value.push({
+	lists.map ((item) => {
+		fileList.value.push ({
 			...item,
 			status: 'uploading',
 			message: '上传中'
 		});
 	});
-	for (let i = 0; i < lists.length; i++) {
-		const result = await uploadFilePromise(lists[i].url);
+	for (let i = 0; i < lists.length; i ++) {
+		const result = await uploadFilePromise (lists[i].url);
 		let item = fileList.value[fileListLen];
-		fileList.value.splice(fileListLen, 1, {
+		fileList.value.splice (fileListLen, 1, {
 			...item,
 			status: 'success',
 			message: '',
 			url: result
 		});
-		fileListLen++;
+		fileListLen ++;
 	}
 };
 
 const uploadFilePromise = (url) => {
-	return new Promise((resolve, reject) => {
-		let a = uni.uploadFile({
+	return new Promise ((resolve, reject) => {
+		let a = uni.uploadFile ({
 			url: baseUrl + '/api/user/upload_img', // 仅为示例，非真实的接口地址
 			filePath: url,
 			name: 'file',
@@ -195,16 +202,16 @@ const uploadFilePromise = (url) => {
 				user: 'test'
 			},
 			success: (res) => {
-				setTimeout(() => {
-					console.log(JSON.parse(res.data).data.url);
-					resolve(baseUrl + '/api/user/get_img' + JSON.parse(res.data).data.url);
+				setTimeout (() => {
+					console.log (JSON.parse (res.data).data.url);
+					resolve (baseUrl + '/api/user/get_img' + JSON.parse (res.data).data.url);
 				}, 1000);
 			}
 		});
 	});
 };
 const selectAddress = (val) => {
-	console.log(val);
+	console.log (val);
 	const { lat, lng } = val.location;
 	const { title } = val;
 
@@ -216,7 +223,7 @@ const selectAddress = (val) => {
 	};
 };
 const selectType = (val, key, str) => {
-	console.log(val);
+	console.log (val);
 	const { startTime, endTime, intro } = val;
 	form.userInfo[key] = val.taskId;
 	form.userInfo[str] = val.name;
@@ -227,37 +234,39 @@ const selectType = (val, key, str) => {
 };
 const getStatistics = async () => {
 	try {
-		const res = await uni.$u.http.post('/api/activity/statistics/my', {
-			userId: uni.getStorageSync('userInfo').userId
+		const res = await uni.$u.http.post ('/api/activity/statistics/my', {
+			userId: uni.getStorageSync ('userInfo').userId
 		});
 		dataVal.total = res.data;
 	} catch (err) {
-		console.log(err);
+		console.log (err);
 	}
 };
 const submit = async () => {
 	const { type, participant, detail, location } = form.userInfo;
-	if (!location || !detail || !type) {
-		uni.$u.toast('请输入完整内容');
+	if ( !location || !detail || !type ) {
+		uni.$u.toast ('请输入完整内容');
 		return;
 	}
-	const imgList = fileList.value.map((item) => {
+	const imgList = fileList.value.map ((item) => {
 		return item.url;
 	});
-	if (imgList.length < 1) {
-		uni.$u.toast('请上传文件');
+	if ( imgList.length < 1 ) {
+		uni.$u.toast ('请上传文件');
 		return;
 	}
-	const str = form.userInfo.participant + ',' + uni.getStorageSync('userInfo').userId;
-	const res = await uni.$u.http.post('/api/user/add_task', {
+	const str = form.userInfo.participant + ',' + uni.getStorageSync ('userId');
+	const res = await uni.$u.http.post ('/api/user/add_task', {
 		...form.userInfo,
-		participant: form.userInfo.participant ? str : uni.getStorageSync('userInfo').userId,
-		img: JSON.stringify(imgList)
+		participant: form.userInfo.participant ? str : uni.getStorageSync ('userId'),
+		img: JSON.stringify (imgList),
+		user_id: uni.getStorageSync ('userId'),
+		role: uni.getStorageSync ('userInfo').role
 	});
-	if (res.code === 200) {
-		uni.$u.toast('打卡成功');
-		setTimeout(() => {
-			uni.switchTab({
+	if ( res.code === 200 ) {
+		uni.$u.toast ('打卡成功');
+		setTimeout (() => {
+			uni.switchTab ({
 				url: '/pages/task/task'
 			});
 		}, 1500);
@@ -265,21 +274,21 @@ const submit = async () => {
 };
 const chooseAddress = () => {
 	const { latitude, longitude } = dataVal.startAddress;
-	uni.openLocation({
+	uni.openLocation ({
 		latitude,
 		longitude,
 		name: form.userInfo.location,
 		success: function () {
-			console.log('success');
+			console.log ('success');
 		}
 	});
 	return;
-	uni.chooseLocation({
+	uni.chooseLocation ({
 		success: function (res) {
-			console.log('位置名称：' + res.name);
-			console.log('详细地址：' + res.address);
-			console.log('纬度：' + res.latitude);
-			console.log('经度：' + res.longitude);
+			console.log ('位置名称：' + res.name);
+			console.log ('详细地址：' + res.address);
+			console.log ('纬度：' + res.latitude);
+			console.log ('经度：' + res.longitude);
 
 			// const distance = calcCoordsDistance(dataVal.startAddress, res);
 			// console.log(dataVal.startAddress, res);
@@ -291,61 +300,63 @@ const chooseAddress = () => {
 			// }
 		},
 		fail: (err) => {
-			console.log(err);
+			console.log (err);
 		}
 	});
 };
 const init = async () => {
 	try {
-		const typeList = uni.$u.http.post('/api/user/type_list', {
+		const typeList = uni.$u.http.post ('/api/user/type_list', {
 			wx: true
 		});
-		const joinList = uni.$u.http.post('/api/user/user_list', {
-			teamId: uni.getStorageSync('userInfo').userId,
+		const joinList = uni.$u.http.post ('/api/user/user_list', {
+			teamId: uni.getStorageSync ('userInfo').userId,
 			page: 1,
 			pageSize: 100
 		});
-		const [type, join] = await Promise.all([typeList, joinList]);
-		console.log(type.data.list, '34');
-		console.log(join.data, '12');
-		actions.value = type.data.list.map((item) => {
+		const [type, join] = await Promise.all ([typeList, joinList]);
+		console.log (type.data.list, '34');
+		console.log (join.data, '12');
+		actions.value = type.data.list.map ((item) => {
 			return {
 				...item,
 				name: item.taskName
 			};
 		});
-		actionsGtAc.value = join.data.list.map((item) => {
+		actionsGtAc.value = join.data.list.map ((item) => {
 			return {
 				name: item.realName
 			};
 		});
 	} catch (err) {
-		console.log(err);
+		console.log (err);
 	}
 };
 // 下拉刷新
-onPullDownRefresh(() => {});
-init();
-onShow(() => {});
-onLoad((option) => {
-	uni.getLocation({
+onPullDownRefresh (() => {
+});
+init ();
+onShow (() => {
+});
+onLoad ((option) => {
+	uni.getLocation ({
 		type: 'gcj02',
 		success: (res) => {
 			dataVal.startAddress = res;
-			console.log(res);
-			console.log('当前位置的经度：' + res.longitude);
-			console.log('当前位置的纬度：' + res.latitude);
+			console.log (res);
+			console.log ('当前位置的经度：' + res.longitude);
+			console.log ('当前位置的纬度：' + res.latitude);
 
 			//使用jdk的方法解析
-			qqmapsdk.reverseGeocoder({
-				location: [res.latitude, res.longitude].join(','),
+			qqmapsdk.reverseGeocoder ({
+				location: [res.latitude, res.longitude].join (','),
 				get_poi: '1',
 				poi_options: 'radius=200',
 				success: function (succ) {
-					console.log(succ, '12121212');
+					console.log (succ, '12121212');
 					form.userInfo.location = succ.result.address;
 
-					addressActions.value = succ.result.pois.map((item) => {
+					addressActions.value = succ.result.pois.map ((item) => {
 						return {
 							...item,
 							name: item.title
@@ -355,11 +366,11 @@ onLoad((option) => {
 			});
 		},
 		fail: (err) => {
-			console.log(err, '定位报错');
-			if (err.errMsg === 'getLocation:fail system permission denied') {
-				uni.$u.toast('请检查定位是否打开');
+			console.log (err, '定位报错');
+			if ( err.errMsg === 'getLocation:fail system permission denied' ) {
+				uni.$u.toast ('请检查定位是否打开');
 			} else {
-				uni.$u.toast(err.errMsg);
+				uni.$u.toast (err.errMsg);
 			}
 		}
 	});
@@ -371,6 +382,7 @@ onLoad((option) => {
 	background: #f6f6f6;
 	height: 100vh;
 	padding: 0 20rpx;
+
 	.main {
 		background: #ffffff;
 		min-height: 80%;

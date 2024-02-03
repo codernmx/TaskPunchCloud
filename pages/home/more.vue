@@ -9,38 +9,39 @@
 		</view>
 	</view>
 	<view class="container">
-		<view class="d-flex space-between mb-4 box">
+		<view class="d-flex space-between mb-4 box" v-if="userStore.userInfo.role == dataVal.role">
 			<view class="d-flex align-items-center" @click="toDetail(item)">
-				<view class="index">{{ '-' }}</view>
-				<image src="https://www.360dk.online/api/user/get_img?path=1706780813.9215033.png"
+				<view class="index">{{ dataVal.myInfo.rank }}</view>
+				<image :src="dataVal.myInfo.avatarUrl"
 					   style="height: 80rpx; width: 80rpx; margin: 0 20rpx;border-radius: 50%;"></image>
 				<view>我的排名</view>
 			</view>
 			<view>
 				<view class="size-24">先锋值
-					<text class="size-28" style="color: #F12F2F">{{ 200 }}</text>
+					<text class="size-28" style="color: #F12F2F">{{ dataVal.myInfo.value }}</text>
 				</view>
-				<view class="size-20" style="color: #9B9B9B;text-align: right">打卡数 {{ 100 }}</view>
+				<view class="size-20" style="color: #9B9B9B;text-align: right">打卡数 {{ dataVal.myInfo.num }}</view>
 			</view>
 		</view>
 
 
 		<view class="box" style="height: 65vh;overflow: scroll;">
+			<u-empty mode="data" v-if="dataVal.tableList.length == 0"></u-empty>
 			<view v-for="(item, i) in dataVal.tableList" :key="i" class="d-flex space-between mb-2">
 				<view class="d-flex align-items-center" @click="toDetail(item)">
-					<view class="index">{{ i + 1 }}</view>
+					<view class="index">{{ item.rank }}</view>
 					<image :src="item.avatarUrl"
 						   style="height: 80rpx; width: 80rpx; margin: 0 20rpx;border-radius: 50%;"></image>
 					<view>{{ item.realName }}</view>
 				</view>
 				<view>
 					<view class="size-24">先锋值
-						<text class="size-28" style="color: #F12F2F">{{ item.teamId }}</text>
+						<text class="size-28" style="color: #F12F2F">{{ item.value }}</text>
 					</view>
-					<view class="size-20" style="color: #9B9B9B;text-align: right">打卡数
-						<text v-if="dataVal.active === 1">{{ item.dayNum }}</text>
-						<text v-if="dataVal.active === 2">{{ item.weekNum }}</text>
-						<text v-if="dataVal.active === 3">{{ item.taskNum }}</text>
+					<view class="size-20" style="color: #9B9B9B;text-align: right">打卡数{{item.num}}
+						<!--<text v-if="dataVal.active === 1">{{ item.dayNum }}</text>-->
+						<!--<text v-if="dataVal.active === 2">{{ item.weekNum }}</text>-->
+						<!--<text v-if="dataVal.active === 3">{{ item.taskNum }}</text>-->
 					</view>
 				</view>
 			</view>
@@ -59,6 +60,8 @@ import config from '@/common/config';
 const baseUrl = config.baseUrl;
 
 const dataVal = reactive ({
+	myInfo:{},
+	role: '',
 	tableList: [],
 	team: [
 		{
@@ -84,17 +87,28 @@ const getList = async () => {
 	try {
 		let type = null;
 		if ( dataVal.active === 1 ) {
-			type = 'dayNum';
+			type = 'day';
 		} else if ( dataVal.active === 2 ) {
-			type = 'weekNum';
+			type = 'week';
 		} else {
-			type = 'taskNum';
+			type = 'all';
 		}
 		const res = await uni.$u.http.post ('/api/user/task_user_rank', {
 			// userId: uni.getStorageSync('userInfo').userId,
-			type
+			type,
+			role: Number (dataVal.role)
 		});
-		dataVal.tableList = res.data.list;
+		dataVal.tableList = res.data.list.map ((item, index) => {
+			return {
+				...item,
+				rank: item.num ? index + 1 : '-'
+			}
+		});
+		dataVal.myInfo = dataVal.tableList.filter (item => {
+			return item.userId === uni.getStorageSync('userId')
+		})[0] ||{}
+		console.log (dataVal.myInfo)
+
 	} catch (err) {
 		console.log (err);
 	}
@@ -128,6 +142,7 @@ onPullDownRefresh (() => {
 onShow (() => {
 });
 onLoad ((option) => {
+	dataVal.role = option.role
 	getList ();
 });
 </script>

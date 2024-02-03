@@ -1,14 +1,14 @@
 <template>
 	<view class="position-relative">
-		<image v-if="dataVal.active === 1"
+		<image v-if="dataVal.active === 2"
 			   src="http://oss.nmxgzs.cn/cloud-task/%E7%BA%A2%E5%B2%A9%E4%B9%8B%E6%98%9F.png"
 			   style="width: 100%; height: 750rpx"></image>
-		<image v-else-if="dataVal.active === 2"
+		<image v-else-if="dataVal.active === 3"
 			   src="http://oss.nmxgzs.cn/cloud-task/%E7%BA%A2%E5%B2%A9%E6%94%AF%E9%83%A8.png"
 			   style="width: 100%; height: 750rpx"></image>
-		<image v-else src="http://oss.nmxgzs.cn/cloud-task/%E7%BA%A2%E5%B2%A9%E5%85%88%E9%94%8B%E9%98%9F.png"
+		<image v-else-if="dataVal.active ===4" src="http://oss.nmxgzs.cn/cloud-task/%E7%BA%A2%E5%B2%A9%E5%85%88%E9%94%8B%E9%98%9F.png"
 			   style="width: 100%; height: 750rpx"></image>
-		<view class="team-choose position-absolute">
+		<view class="team-choose position-absolute" style="z-index: 999">
 			<view v-for="(item, i) in dataVal.team" :key="i"
 				  :class="{ active: dataVal.active === item.index, item: true }" @click="tamChange(item)">
 				{{ item.name }}
@@ -31,25 +31,27 @@
 				<view class="mt-1">
 					{{ dataVal.oneTwoThree[1].realName }}
 				</view>
-				<view class="size-20">先锋值{{dataVal.oneTwoThree[1].taskNum }}</view>
-				<view class="size-20">打卡数{{dataVal.oneTwoThree[1].taskNum }}</view>
+				<view class="size-20">先锋值{{ dataVal.oneTwoThree[1].value }}</view>
+				<view class="size-20">打卡数{{ dataVal.oneTwoThree[1].num }}</view>
 			</view>
 			<view style="margin-top: -50rpx" class="d-flex direction-column align-items-center white"
 				  @click="toDetail(dataVal.oneTwoThree[0])">
 				<view class="position-relative">
-					<image src="../../static/head/one.png" style="width: 120rpx; height: 160rpx; position: absolute"
+					<image src="../../static/head/one.png" style="width: 120rpx; height: 160rpx; position: absolute;z-index: 2;"
 						   mode=""></image>
+					<image src="../../static/head/one-bg.png" mode="" class="position-absolute" style="width: 334rpx;height: 194rpx;top: -50rpx;z-index: 0;margin-left: -100rpx;"></image>
 					<image
 						:src="dataVal.oneTwoThree[0].avatarUrl"
-						style="height: 110rpx; width: 114rpx; margin: 50rpx 20rpx 0 5rpx; border-radius: 50%"
+						style="height: 110rpx; width: 114rpx; margin: 50rpx 20rpx 0 5rpx; border-radius: 50%;position: relative;"
 					></image>
+					
 				</view>
 
 				<view class="mt-1">
-					{{  dataVal.oneTwoThree[0].realName}}
+					{{ dataVal.oneTwoThree[0].realName }}
 				</view>
-				<view class="size-20">先锋值{{dataVal.oneTwoThree[0].taskNum }}</view>
-				<view class="size-20">打卡数{{dataVal.oneTwoThree[0].taskNum }}</view>
+				<view class="size-20">先锋值{{ dataVal.oneTwoThree[0].value }}</view>
+				<view class="size-20">打卡数{{ dataVal.oneTwoThree[0].num }}</view>
 			</view>
 
 			<view class="d-flex direction-column align-items-center white" @click="toDetail(dataVal.oneTwoThree[2])">
@@ -62,10 +64,10 @@
 					></image>
 				</view>
 				<view class="mt-1">
-					{{  dataVal.oneTwoThree[2].realName }}
+					{{ dataVal.oneTwoThree[2].realName }}
 				</view>
-				<view class="size-20">先锋值{{dataVal.oneTwoThree[2].taskNum }}</view>
-				<view class="size-20">打卡数{{dataVal.oneTwoThree[2].taskNum }}</view>
+				<view class="size-20">先锋值{{ dataVal.oneTwoThree[2].value }}</view>
+				<view class="size-20">打卡数{{ dataVal.oneTwoThree[2].num }}</view>
 			</view>
 		</view>
 	</view>
@@ -80,8 +82,10 @@
 					<view>{{ item.realName }}</view>
 				</view>
 				<view>
-					<view class="size-24">先锋值<text class="size-28" style="color: #F12F2F">{{ item.taskNum }}</text></view>
-					<view class="size-20" style="color: #9B9B9B;text-align: right">打卡数{{ item.taskNum }}</view>
+					<view class="size-24">先锋值
+						<text class="size-28" style="color: #F12F2F">{{ item.value }}</text>
+					</view>
+					<view class="size-20" style="color: #9B9B9B;text-align: right">打卡数{{ item.num }}</view>
 				</view>
 			</view>
 			<view class="d-flex space-between mt-2 size-24 pl-1" @click="more">
@@ -107,37 +111,39 @@ const dataVal = reactive ({
 	oneTwoThree: [{}, {}, {}],
 	team: [
 		{
-			index: 1,
+			index: 2,
 			name: '红岩之星',
 			score: 232
 		},
 		{
-			index: 2,
+			index: 3,
 			name: '红岩支部',
 			score: 220
 		},
 		{
-			index: 3,
+			index: 4,
 			name: '红岩先锋队',
 			score: 220
 		}
 	],
-	active: 1
+	active: 2
 });
 
 const getList = async () => {
 	try {
 		const res = await uni.$u.http.post ('/api/user/task_user_rank', {
-			// userId: uni.getStorageSync('userInfo').userId,
-			type: 'taskNum'
+			type: 'all',
+			role: dataVal.active
 		});
+		res.data.list = res.data.list.filter (item => item.num)
 		dataVal.oneTwoThree = res.data.list.slice (0, 3);
 		if ( dataVal.oneTwoThree.length < 3 ) {
-			for (let i = 0; i <= 3 - dataVal.oneTwoThree.length; i ++) {
-				dataVal.oneTwoThree.push ({});
+			for (let i = 0; i <= 4 - dataVal.oneTwoThree.length; i ++) {
+				dataVal.oneTwoThree.push ({
+					avatarUrl:'https://www.360dk.online/api/user/get_img?path=1706780813.9215033.png'
+				});
 			}
 		}
-		console.log (dataVal.oneTwoThree, '5656');
 		dataVal.tableList = res.data.list.slice (3, 10);
 	} catch (err) {
 		console.log (err);
@@ -160,15 +166,18 @@ const toDetail = (item) => {
 	}
 };
 const more = () => {
-	if ( dataVal.active === 1 ) {
-		uni.navigateTo ({
-			url: '/pages/home/more'
-		});
-	} else {
-		uni.navigateTo ({
-			url: '/pages/home/more-team'
-		});
-	}
+	uni.navigateTo ({
+		url: '/pages/home/more?role=' + dataVal.active
+	});
+	// if ( dataVal.active === 1 ) {
+	// 	uni.navigateTo ({
+	// 		url: '/pages/home/more'
+	// 	});
+	// } else {
+	// 	uni.navigateTo ({
+	// 		url: '/pages/home/more-team'
+	// 	});
+	// }
 };
 const getTeamList = async () => {
 	try {

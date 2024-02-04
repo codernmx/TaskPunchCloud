@@ -91,7 +91,7 @@ const getTeamList = async () => {
 
 onLoad((option) => {});
 
-getTeamList();
+// getTeamList();
 const login = () => {
 	const { username, password, repassword, phone, realName } = dataVal.form;
 	if (!username || !password) {

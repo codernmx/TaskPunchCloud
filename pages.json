@@ -45,26 +45,26 @@
 		{
 			"path": "pages/home/home",
 			"style": {
-				"navigationBarTitleText": "任务云"
+				"navigationBarTitleText": "红岩打卡云"
 			}
 		},
 		{
 			"path": "pages/home/more",
 			"style": {
-				"navigationBarTitleText": "任务云"
+				"navigationBarTitleText": "红岩打卡云"
 			}
 		},
 		{
 			"path": "pages/home/more-team",
 			"style": {
-				"navigationBarTitleText": "任务云"
+				"navigationBarTitleText": "红岩打卡云"
 			}
 		},
 
 		{
 			"path": "pages/task/task",
 			"style": {
-				"navigationBarTitleText": "任务云",
+				"navigationBarTitleText": "红岩打卡云",
 				"disableScroll": true
 			}
 		},
@@ -120,7 +120,7 @@
 	"subPackages": [],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "任务云",
+		"navigationBarTitleText": "红岩打卡云",
 		"navigationBarBackgroundColor": "#F24643",
 		"backgroundColor": "#FFFFFF"
 	}

@@ -68,7 +68,7 @@ const toTask = (type) => {
 	});
 };
 const toTeam = () => {
-	const {teamId,teamName} = uni.getStorageSync('userInfo')
+	const {teamId,teamName} = userStore.userInfo
 	uni.navigateTo({
 		url: '/pages/userList/userList?teamId='+teamId+'&teamName='+teamName
 	});
@@ -86,29 +86,8 @@ const changeHead = () => {
 const dataVal = reactive({
 	userInfo: {}
 });
-const iconList = ref([
-	{
-		title: '个人信息',
-		icon: 'account',
-		page: '/pages/me/info'
-	},
-	{
-		title: '我的证书',
-		icon: 'bookmark',
-		page: '/pages/me/certificate'
-	},
-	{
-		title: '平台公告',
-		icon: 'coupon',
-		page: '/pages/me/notice'
-	},
-	{
-		title: '反馈建议',
-		icon: 'kefu-ermai',
-		page: '/pages/me/about'
-	}
-]);
-const energyList = ref([]);
+
+
 const toPage = (url) => {
 	uni.navigateTo({
 		url
@@ -116,8 +95,6 @@ const toPage = (url) => {
 };
 
 const onChooseAvatar = (e) => {
-	console.log(e.detail.avatarUrl);
-
 	uni.uploadFile({
 		url: baseUrl + '/api/user/upload_img', // 仅为示例，非真实的接口地址
 		filePath: e.detail.avatarUrl,
@@ -144,16 +121,7 @@ const onChooseAvatar = (e) => {
 		}
 	});
 };
-const getStatistics = async () => {
-	try {
-		const res = await uni.$u.http.post('/api/activity/statistics/my', {
-			userId: uni.getStorageSync('userInfo').userId
-		});
-		dataVal.total = res.data;
-	} catch (err) {
-		console.log(err);
-	}
-};
+
 
 const loginOut = () => {
 	uni.redirectTo({

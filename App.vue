@@ -1,3 +1,7 @@
+<!--
+ * @Date: 2024-02-04 10:04:55
+ * @LastEditTime: 2024-02-04 12:38:42
+-->
 <script>
 import { useUserStore } from '@/store/index';
 export default {
@@ -29,7 +33,7 @@ export default {
 	onShow: function (options) {
 		console.log('App Show--->', options);
 		this.updateApp();
-		this.getUserInfo();
+		// this.getUserInfo();
 	},
 	onHide: function () {
 		console.log('App Hide');
@@ -37,7 +41,7 @@ export default {
 	methods: {
 		async getUserInfo() {
 			try {
-				const userId = uni.getStorageSync('userInfo').userId.toString()
+				const userId = uni.getStorageSync('userId').toString()
 				if(!userId){
 					return
 				}
@@ -46,7 +50,6 @@ export default {
 				});
 				const userStore = useUserStore();
 				userStore.userInfo = res.data.list[0]
-
 				uni.setStorageSync('userInfo', res.data.list[0]);
 				uni.setStorageSync('userId', res.data.list[0].userId);
 			} catch (err) {

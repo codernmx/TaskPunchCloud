@@ -17,13 +17,10 @@
 <script setup>
 import { reactive, computed, ref, onMounted, getCurrentInstance } from 'vue';
 import { onLoad, onShow, onPullDownRefresh } from '@dcloudio/uni-app';
-import MeLink from '@/components/MeLink.vue';
 
 import { useUserStore } from '@/store/index';
-
 const userStore = useUserStore();
 import config from '@/common/config';
-
 const baseUrl = config.baseUrl;
 
 const old = ref('');
@@ -64,95 +61,10 @@ const submit = async () => {
 		});
 };
 
-const toTask = (type) => {
-	let url = '/pages/userList/userDetail';
-	if (type === 2) {
-		url = '/pages/userList/userDetail?status=3';
-	}
-	uni.navigateTo({
-		url
-	});
-};
-
 const dataVal = reactive({
 	userInfo: {}
 });
-const iconList = ref([
-	{
-		title: '个人信息',
-		icon: 'account',
-		page: '/pages/me/info'
-	},
-	{
-		title: '我的证书',
-		icon: 'bookmark',
-		page: '/pages/me/certificate'
-	},
-	{
-		title: '平台公告',
-		icon: 'coupon',
-		page: '/pages/me/notice'
-	},
-	{
-		title: '反馈建议',
-		icon: 'kefu-ermai',
-		page: '/pages/me/about'
-	}
-]);
-const energyList = ref([]);
-const toPage = (url) => {
-	uni.navigateTo({
-		url
-	});
-};
 
-const onChooseAvatar = (e) => {
-	console.log(e.detail.avatarUrl);
-
-	uni.uploadFile({
-		url: baseUrl + '/api/user/upload_img', // 仅为示例，非真实的接口地址
-		filePath: e.detail.avatarUrl,
-		name: 'file',
-		formData: {
-			user: 'test'
-		},
-		success: (res) => {
-			const avatar = baseUrl + '/api/user/get_img' + JSON.parse(res.data).data.url;
-			uni.$u.http
-				.post('/api/user/update_user', {
-					...userStore.userInfo,
-					avatarUrl: avatar
-				})
-				.then((result) => {
-					if (result.code === 200) {
-						userStore.userInfo = {
-							...userStore.userInfo,
-							avatarUrl: avatar
-						};
-					}
-					console.log(result);
-				});
-		}
-	});
-};
-const getStatistics = async () => {
-	try {
-		const res = await uni.$u.http.post('/api/activity/statistics/my', {
-			userId: uni.getStorageSync('userInfo').userId
-		});
-		dataVal.total = res.data;
-	} catch (err) {
-		console.log(err);
-	}
-};
-
-const loginOut = () => {
-	uni.clearStorageSync();
-	console.log(1);
-	uni.redirectTo({
-		url: '/pages/login/login'
-	});
-};
 // 下拉刷新
 onPullDownRefresh(() => {});
 

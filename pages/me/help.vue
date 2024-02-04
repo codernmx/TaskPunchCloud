@@ -21,23 +21,7 @@ import config from '@/common/config';
 
 const baseUrl = config.baseUrl;
 
-const submit = async () => {
-	uni.$u.http
-		.post('/api/user/update_user', {
-			...userStore.userInfo,
-			password: value.value
-		})
-		.then((result) => {
-			if (result.code === 200) {
-				uni.$u.toast('修改成功');
-			}
-			console.log(result);
-		});
-};
-
-const dataVal = reactive({
-	userInfo: {}
-});
+const dataVal = reactive({});
 
 // 下拉刷新
 onPullDownRefresh(() => {});

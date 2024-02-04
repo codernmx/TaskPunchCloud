@@ -1,10 +1,12 @@
+<!--
+ * @Date: 2024-01-30 09:57:23
+ * @LastEditTime: 2024-02-04 12:26:59
+-->
 <template>
 	<view class="container position-relative">
 		<image src="/static/bg.jpg" style="width: 100%; height: 100%; opacity: 0.6" mode="scaleToFill" class="position-absolute"></image>
-
 		<!-- 管理端 -->
 		<!-- <blockquote v-if="userStore.userInfo.role === 1"></blockquote> -->
-
 		<!-- 普通用户 -->
 		<blockquote>
 			<view class="position-absolute d-flex justify-content-center align-items-center direction-column" style="z-index: 2; width: 100%; margin-top: 20%">
@@ -50,7 +52,7 @@ const toAddEdit = () => {
 const getUserInfo = async () => {
 	try {
 		const res = await uni.$u.http.post('/api/user/task_num', {
-			userId: uni.getStorageSync('userInfo').userId.toString(),
+			userId: uni.getStorageSync ('userId').toString(),
 		});
 		console.log(res,'res')
 		dataVal.total = res.data.total

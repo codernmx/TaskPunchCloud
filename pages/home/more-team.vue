@@ -82,7 +82,6 @@ const getList = async () => {
 			type = 'taskNum';
 		}
 		const res = await uni.$u.http.post('/api/user/task_group_rank', {
-			// userId: uni.getStorageSync('userInfo').userId,
 			type
 		});
 		dataVal.tableList = res.data.list;

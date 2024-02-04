@@ -38,7 +38,6 @@ import { useUserStore } from '@/store/index';
 
 const userStore = useUserStore ();
 import config from '@/common/config';
-
 const baseUrl = config.baseUrl;
 
 

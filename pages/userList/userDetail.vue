@@ -3,7 +3,6 @@ import { ref, reactive, computed } from 'vue';
 import { onLoad, onShow, onPullDownRefresh } from '@dcloudio/uni-app';
 import { useUserStore } from '@/store/index';
 const userStore = useUserStore();
-const indexList = ref([]);
 const dataVal = reactive({
 	info: {
 		info: {
@@ -17,11 +16,6 @@ const dataVal = reactive({
 	user: {}
 });
 const userId = ref('');
-const bottomList = ref([
-	{ src: '', value: 88 },
-	{ src: '', value: 88 }
-]);
-const src = ref('http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2119_s.jpg');
 
 const scrolltolower = () => {
 	loadmore();
@@ -34,7 +28,7 @@ const loadmore = () => {
 const zanAndShare = async (clockId, type) => {
 	let url = type === 1 ? '/api/user/share' : '/api/user/zan';
 	const res = await uni.$u.http.post(url, {
-		userId: uni.getStorageSync('userInfo').userId,
+		userId: uni.getStorageSync('userId'),
 		clockId
 	});
 	if (res.code === 200) {
@@ -75,7 +69,7 @@ const toDetail = (clockId) => {
 	});
 };
 onLoad((options) => {
-	userId.value = options.userId ? options.userId : uni.getStorageSync('userInfo').userId;
+	userId.value = options.userId ? options.userId : uni.getStorageSync('userId');
 	if (options.status) {
 		dataVal.params.status = options.status;
 	}

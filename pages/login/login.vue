@@ -61,11 +61,7 @@ const password = ref(true);
 const repassword = ref(true);
 const register = ref(false);
 onShow(() => {
-	// if (uni.getStorageSync('userInfo')) {
-	// 	uni.switchTab({
-	// 		url: '/pages/home/home'
-	// 	});
-	// }
+
 });
 const toRegister=()=>{
 	register.value = !register.value
@@ -138,21 +134,19 @@ const login = () => {
 			if (!register.value && res.message === '用户登入成功') {
 				uni.$u.toast('登录成功');
 				userStore.userInfo = res.data.userInfo;
+				userStore.userId = res.data.userInfo.userId;
 				userStore.token = res.data.token;
 				uni.setStorageSync('userInfo', res.data.userInfo);
 				uni.setStorageSync('userId', res.data.userInfo.userId);
 				uni.setStorageSync('token', res.data.token);
-
 				uni.setStorageSync('username', username);
 				uni.setStorageSync('password', password);
-
 				setTimeout(() => {
 					uni.switchTab({
 						url: '/pages/home/home'
 					});
 				}, 500);
 			}
-
 			if (res.message === '暂未注册!') {
 				uni.$u.toast('登录失败');
 			}

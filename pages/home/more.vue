@@ -94,7 +94,6 @@ const getList = async () => {
 			type = 'all';
 		}
 		const res = await uni.$u.http.post ('/api/user/task_user_rank', {
-			// userId: uni.getStorageSync('userInfo').userId,
 			type,
 			role: Number (dataVal.role)
 		});

@@ -232,16 +232,7 @@ const selectType = (val, key, str) => {
 	form.userInfo.startTime = startTime;
 	form.userInfo.intro = intro;
 };
-const getStatistics = async () => {
-	try {
-		const res = await uni.$u.http.post ('/api/activity/statistics/my', {
-			userId: uni.getStorageSync ('userInfo').userId
-		});
-		dataVal.total = res.data;
-	} catch (err) {
-		console.log (err);
-	}
-};
+
 const submit = async () => {
 	const { type, participant, detail, location } = form.userInfo;
 	if ( !location || !detail || !type ) {
@@ -255,12 +246,13 @@ const submit = async () => {
 		uni.$u.toast ('请上传文件');
 		return;
 	}
-	const str = form.userInfo.participant + ',' + uni.getStorageSync ('userId');
+	const user_id = uni.getStorageSync ('userId')
+	const str = form.userInfo.participant + ',' + user_id;
 	const res = await uni.$u.http.post ('/api/user/add_task', {
 		...form.userInfo,
-		participant: form.userInfo.participant ? str : uni.getStorageSync ('userId'),
+		participant: form.userInfo.participant ? str : user_id,
 		img: JSON.stringify (imgList),
-		user_id: uni.getStorageSync ('userId'),
+		user_id,
 		role: uni.getStorageSync ('userInfo').role
 	});
 	if ( res.code === 200 ) {
@@ -309,23 +301,16 @@ const init = async () => {
 		const typeList = uni.$u.http.post ('/api/user/type_list', {
 			wx: true
 		});
-		const joinList = uni.$u.http.post ('/api/user/user_list', {
-			teamId: uni.getStorageSync ('userInfo').userId,
-			page: 1,
-			pageSize: 100
-		});
-		const [type, join] = await Promise.all ([typeList, joinList]);
-		console.log (type.data.list, '34');
-		console.log (join.data, '12');
+		// const joinList = uni.$u.http.post ('/api/user/user_list', {
+		// 	teamId: uni.getStorageSync ('userInfo').userId,
+		// 	page: 1,
+		// 	pageSize: 100
+		// });
+		const [type] = await Promise.all ([typeList]);
 		actions.value = type.data.list.map ((item) => {
 			return {
 				...item,
 				name: item.taskName
-			};
-		});
-		actionsGtAc.value = join.data.list.map ((item) => {
-			return {
-				name: item.realName
 			};
 		});
 	} catch (err) {
@@ -346,7 +331,6 @@ onLoad ((option) => {
 			console.log (res);
 			console.log ('当前位置的经度：' + res.longitude);
 			console.log ('当前位置的纬度：' + res.latitude);
-
 			//使用jdk的方法解析
 			qqmapsdk.reverseGeocoder ({
 				location: [res.latitude, res.longitude].join (','),

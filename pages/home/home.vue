@@ -18,8 +18,8 @@
 
 		<!--1-3-->
 		<view class="d-flex space-between position-absolute"
-			  style="padding: 0 13%;width: calc(100% - 26%);bottom:60rpx">
-			<view class="d-flex direction-column align-items-center white" @click="toDetail(dataVal.oneTwoThree[1])">
+			  style="padding: 0 7%;width: calc(100% - 14%);bottom:60rpx">
+			<view style="width: 33%;" class="d-flex direction-column align-items-center white" @click="toDetail(dataVal.oneTwoThree[1])">
 				<view class="position-relative">
 					<image src="../../static/head/two.png" style="width: 115rpx; height: 135rpx; position: absolute"
 						   mode=""></image>
@@ -28,13 +28,13 @@
 						style="height: 105rpx; width: 108rpx; margin: 28rpx 20rpx 0 5rpx; border-radius: 50%"
 					></image>
 				</view>
-				<view class="mt-1">
+				<view class="mt-1 name">
 					{{ dataVal.oneTwoThree[1].realName }}
 				</view>
 				<view class="size-20">先锋值{{ dataVal.oneTwoThree[1].value }}</view>
 				<view class="size-20">打卡数{{ dataVal.oneTwoThree[1].num }}</view>
 			</view>
-			<view style="margin-top: -50rpx" class="d-flex direction-column align-items-center white"
+			<view style="margin-top: -50rpx;width: 33%;"  class="d-flex direction-column align-items-center white"
 				  @click="toDetail(dataVal.oneTwoThree[0])">
 				<view class="position-relative">
 					<image src="../../static/head/one.png" style="width: 120rpx; height: 160rpx; position: absolute;z-index: 2;"
@@ -47,14 +47,14 @@
 					
 				</view>
 
-				<view class="mt-1">
+				<view class="mt-1 name">
 					{{ dataVal.oneTwoThree[0].realName }}
 				</view>
 				<view class="size-20">先锋值{{ dataVal.oneTwoThree[0].value }}</view>
 				<view class="size-20">打卡数{{ dataVal.oneTwoThree[0].num }}</view>
 			</view>
 
-			<view class="d-flex direction-column align-items-center white" @click="toDetail(dataVal.oneTwoThree[2])">
+			<view style="width: 33%;" class="d-flex direction-column align-items-center white" @click="toDetail(dataVal.oneTwoThree[2])">
 				<view class="position-relative">
 					<image src="../../static/head/three.png"
 						   style="width: 120rpx; height: 140rpx; margin-top: 20rpx; position: absolute" mode=""></image>
@@ -63,7 +63,7 @@
 						style="height: 110rpx; width: 110rpx; margin: 48rpx 20rpx 0 6rpx; border-radius: 50%"
 					></image>
 				</view>
-				<view class="mt-1">
+				<view class="mt-1 name">
 					{{ dataVal.oneTwoThree[2].realName }}
 				</view>
 				<view class="size-20">先锋值{{ dataVal.oneTwoThree[2].value }}</view>
@@ -79,7 +79,7 @@
 					<view class="index">{{ i + 4 }}</view>
 					<image :src="item.avatarUrl"
 						   style="height: 80rpx; width: 80rpx; margin: 0 20rpx; border-radius: 50%"></image>
-					<view>{{ item.realName }}</view>
+					<view class="size-26">{{ item.realName }}</view>
 				</view>
 				<view>
 					<view class="size-24">先锋值
@@ -249,6 +249,10 @@ onLoad ((option) => {
 </script>
 
 <style lang="less" scoped>
+	.name{
+		font-size: 26rpx;
+		text-align: center;
+	}
 .team-choose {
 
 	width: calc(100% - 184rpx);
@@ -284,6 +288,8 @@ onLoad ((option) => {
 	background: #f5f5f5;
 	min-height: 60vh;
 	padding: 0 20rpx;
+	
+
 
 	.box {
 		position: relative;

@@ -25,14 +25,14 @@
 		</view>
 
 
-		<view class="box" style="height: 65vh;overflow: scroll;">
+		<view class="box" style="overflow: scroll;" :style="{height:userStore.userInfo.role == dataVal.role ? '65vh' : '78vh'}">
 			<u-empty mode="data" v-if="dataVal.tableList.length == 0"></u-empty>
 			<view v-for="(item, i) in dataVal.tableList" :key="i" class="d-flex space-between mb-2">
 				<view class="d-flex align-items-center" @click="toDetail(item)">
 					<view class="index">{{ item.rank }}</view>
 					<image :src="item.avatarUrl"
 						   style="height: 80rpx; width: 80rpx; margin: 0 20rpx;border-radius: 50%;"></image>
-					<view>{{ item.realName }}</view>
+					<view class="size-26">{{ item.realName }}</view>
 				</view>
 				<view>
 					<view class="size-24">先锋值

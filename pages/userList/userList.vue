@@ -30,7 +30,7 @@ const getList = async () => {
 };
 const toDetail = ({ userId }) => {
 	uni.navigateTo({
-		url: '/pages/userList/userDetail?userId=' + userId
+		url: '/pages/userList/userDetail?userId=' + userId + '&status=2'
 	});
 };
 onLoad((options) => {

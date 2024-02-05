@@ -153,7 +153,7 @@ const getList = async () => {
 const toDetail = (item) => {
 	if ( item.userId ) {
 		uni.navigateTo ({
-			url: '/pages/userList/userDetail?userId=' + item.userId
+			url: '/pages/userList/userDetail?userId=' + item.userId + '&status=2'
 		});
 	} else {
 		// uni.$u.toast('团队暂不支持');

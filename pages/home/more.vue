@@ -10,7 +10,7 @@
 	</view>
 	<view class="container">
 		<view class="d-flex space-between mb-4 box" v-if="userStore.userInfo.role == dataVal.role">
-			<view class="d-flex align-items-center" @click="toDetail(item)">
+			<view class="d-flex align-items-center">
 				<view class="index">{{ dataVal.myInfo.rank }}</view>
 				<image :src="dataVal.myInfo.avatarUrl"
 					   style="height: 80rpx; width: 80rpx; margin: 0 20rpx;border-radius: 50%;"></image>
@@ -128,7 +128,7 @@ const tamChange = (item) => {
 const toDetail = (item) => {
 	if ( item.userId ) {
 		uni.navigateTo ({
-			url: '/pages/userList/userDetail?userId=' + item.userId
+			url: '/pages/userList/userDetail?userId=' + item.userId + '&status=2'
 		});
 	} else {
 		uni.$u.toast ('团队暂不支持');

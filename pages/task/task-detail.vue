@@ -37,6 +37,9 @@
 				<view class="text-bold">任务详情</view>
 				<view>{{ dataVal.info.detail }}</view>
 			</view>
+			
+			<!-- 评论区 -->
+			<Comment />
 		</view>
 	</view>
 </template>
@@ -45,6 +48,8 @@
 import { reactive, computed, ref, onMounted, getCurrentInstance } from 'vue';
 import { onLoad, onShow, onPullDownRefresh } from '@dcloudio/uni-app';
 import { useUserStore } from '@/store/index';
+
+import Comment from '@/components/Comment.vue';
 
 const userStore = useUserStore();
 import config from '@/common/config';

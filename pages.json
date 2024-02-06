@@ -4,7 +4,8 @@
 		"custom": {
 			"^u--(.*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
 			"^up-(.*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
-			"^u-([^-].*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue"
+			"^u-([^-].*)": "@/uni_modules/uview-plus/components/u-$1/u-$1.vue",
+			"h-(.*)": "@/components/h-$1/h-$1.vue"
 		}
 	},
 	"tabBar": {

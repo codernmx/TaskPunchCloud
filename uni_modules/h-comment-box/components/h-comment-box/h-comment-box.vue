@@ -28,9 +28,9 @@
                 <!-- 一级评论 => 日期、回复 -->
                 <view class="h_date">
                     {{ item.date }}
-                    <view class="h_revert" :style="{ color: themeColor }" @tap="showRevertPop(index, item, null, null)">
+                    <!-- <view class="h_revert" :style="{ color: themeColor }" @tap="showRevertPop(index, item, null, null)">
                         回复
-                    </view>
+                    </view> -->
                     <view class="h_remove" v-if="item.isMyComment" @tap="removeRevertModal(index, item, null, null)">
                         删除
                     </view>

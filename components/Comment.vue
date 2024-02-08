@@ -5,10 +5,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const commontRef = ref(null); // 评论组件实例
 const inputVal = ref(''); // 评论弹框的value
+
+const props = defineProps({
+	taskId: {
+		type: String,
+		default: ''
+	}
+});
 
 // 模拟当前用户信息
 const userInfo = ref({
@@ -108,50 +115,57 @@ function remove(data, callback) {
 	// 调用删除接口成功后，调用 callback() 用于更新评论列表
 	callback();
 }
-
+const getList = async () => {
+	console.log('56565');
+	const res = await uni.$u.http.post('/api/user/task_num', {
+		taskId: props.taskId
+	});
+	commentList.value.push({}, {}, {});
+	console.log(res, 'res');
+};
 /*
  * 列表数据
  */
 const commentList = ref([
-	{
-		id: 1,
-		user_id: 1,
-		user_name: '叶轻眉',
-		user_avatar: 'https://cdn.uviewui.com/uview/template/SmilingDog.jpg',
-		user_content: '我对这个话题有很深的感触。在我看来，这是一个引发深思的议题。我认为，我们需要更加深入地探讨其中的各个方面，以便得出更全面的结论。',
-		user_date: '2021-12-25 18:58',
-		allReply: 4,
-		user_like_num: 33,
-		user_is_like: false,
-		isMyComment: true,
-		isLoading: false,
-		user_reply_list: [
-			{
-				user_reply_id: 20,
-				user_reply_name: '叮叮',
-				user_reply_content: '你的观点非常有趣。然而，我个人对这个问题持有不同的见解。我认为这个议题可以从不同的角度来看待，这样我们可能会发现一些新的视角。',
-				user_reply_avatar: 'https://cdn.uviewui.com/uview/template/niannian.jpg',
-				user_reply_is_like: true,
-				user_reply_like_num: 1,
-				user_reply_date: '2023-06-01 12:00',
-				pid: 1,
-				user_isMyComment: false
-			},
-			{
-				user_reply_id: 21,
-				user_reply_name: '虎虎',
-				user_reply_content: '这个讨论真的很引人入胜。我想深入探讨一下你提到的观点。我认为我们可以进一步挖掘这个话题，以便更好地理解其中的复杂性。',
-				user_reply_avatar: 'https://cdn.uviewui.com/uview/template/niannian.jpg',
-				user_reply_is_like: false,
-				user_reply_like_num: 0,
-				user_reply_date: '2023-06-01 19:00',
-				to_user_name: '叮叮',
-				to_user_id: 20,
-				pid: 1,
-				user_isMyComment: true
-			}
-		]
-	},
+	// {
+	// 	id: 1,
+	// 	user_id: 1,
+	// 	user_name: '叶轻眉',
+	// 	user_avatar: 'https://cdn.uviewui.com/uview/template/SmilingDog.jpg',
+	// 	user_content: '我对这个话题有很深的感触。在我看来，这是一个引发深思的议题。我认为，我们需要更加深入地探讨其中的各个方面，以便得出更全面的结论。',
+	// 	user_date: '2021-12-25 18:58',
+	// 	allReply: 4,
+	// 	user_like_num: 33,
+	// 	user_is_like: false,
+	// 	isMyComment: true,
+	// 	isLoading: false,
+	// 	user_reply_list: [
+	// 		{
+	// 			user_reply_id: 20,
+	// 			user_reply_name: '叮叮',
+	// 			user_reply_content: '你的观点非常有趣。然而，我个人对这个问题持有不同的见解。我认为这个议题可以从不同的角度来看待，这样我们可能会发现一些新的视角。',
+	// 			user_reply_avatar: 'https://cdn.uviewui.com/uview/template/niannian.jpg',
+	// 			user_reply_is_like: true,
+	// 			user_reply_like_num: 1,
+	// 			user_reply_date: '2023-06-01 12:00',
+	// 			pid: 1,
+	// 			user_isMyComment: false
+	// 		},
+	// 		{
+	// 			user_reply_id: 21,
+	// 			user_reply_name: '虎虎',
+	// 			user_reply_content: '这个讨论真的很引人入胜。我想深入探讨一下你提到的观点。我认为我们可以进一步挖掘这个话题，以便更好地理解其中的复杂性。',
+	// 			user_reply_avatar: 'https://cdn.uviewui.com/uview/template/niannian.jpg',
+	// 			user_reply_is_like: false,
+	// 			user_reply_like_num: 0,
+	// 			user_reply_date: '2023-06-01 19:00',
+	// 			to_user_name: '叮叮',
+	// 			to_user_id: 20,
+	// 			pid: 1,
+	// 			user_isMyComment: true
+	// 		}
+	// 	]
+	// },
 	{
 		id: 2,
 		user_id: 2,
@@ -165,47 +179,54 @@ const commentList = ref([
 		isLoading: false,
 		user_reply_list: [],
 		isMyComment: false
-	},
-	{
-		id: 3,
-		user_id: 3,
-		user_name: '鲁班',
-		user_date: '2021-03-25 13:58',
-		user_content: '基于我的经验，我发现这个问题可能涉及到更多的因素。我想分享一些我之前遇到的类似情况，并探讨它们对我们当前的讨论有什么启示。',
-		user_like_num: 21,
-		user_is_like: false,
-		allReply: 2,
-		user_avatar: 'https://cdn.uviewui.com/uview/template/niannian.jpg',
-		isLoading: false,
-		isMyComment: false,
-		user_reply_list: [
-			{
-				user_reply_id: 20,
-				user_reply_name: '小猪',
-				user_reply_content: '你的观点让我回想起了一个相似的情境。当时我面临了类似的抉择，经历了一些挑战。我想分享一下那段经历，看看是否对我们的讨论有所启发。',
-				user_reply_avatar: 'https://cdn.uviewui.com/uview/template/niannian.jpg',
-				user_reply_is_like: true,
-				user_reply_like_num: 1,
-				user_reply_date: '2023-06-01 12:00',
-				pid: 3,
-				user_isMyComment: false
-			},
-			{
-				user_reply_id: 21,
-				user_reply_name: '小狗',
-				user_reply_content: '对于这个问题，我认为关键在于更全面地考虑各种因素。我们可以尝试从不同的角度来看待，以确保我们的讨论更加全面和深刻。',
-				user_reply_avatar: 'https://cdn.uviewui.com/uview/template/niannian.jpg',
-				user_reply_is_like: false,
-				user_reply_like_num: 0,
-				user_reply_date: '2023-06-01 19:00',
-				to_user_name: '小猪',
-				to_user_id: 20,
-				pid: 3,
-				user_isMyComment: true
-			}
-		]
 	}
+	// {
+	// 	id: 3,
+	// 	user_id: 3,
+	// 	user_name: '鲁班',
+	// 	user_date: '2021-03-25 13:58',
+	// 	user_content: '基于我的经验，我发现这个问题可能涉及到更多的因素。我想分享一些我之前遇到的类似情况，并探讨它们对我们当前的讨论有什么启示。',
+	// 	user_like_num: 21,
+	// 	user_is_like: false,
+	// 	allReply: 2,
+	// 	user_avatar: 'https://cdn.uviewui.com/uview/template/niannian.jpg',
+	// 	isLoading: false,
+	// 	isMyComment: false,
+	// 	user_reply_list: [
+	// 		{
+	// 			user_reply_id: 20,
+	// 			user_reply_name: '小猪',
+	// 			user_reply_content: '你的观点让我回想起了一个相似的情境。当时我面临了类似的抉择，经历了一些挑战。我想分享一下那段经历，看看是否对我们的讨论有所启发。',
+	// 			user_reply_avatar: 'https://cdn.uviewui.com/uview/template/niannian.jpg',
+	// 			user_reply_is_like: true,
+	// 			user_reply_like_num: 1,
+	// 			user_reply_date: '2023-06-01 12:00',
+	// 			pid: 3,
+	// 			user_isMyComment: false
+	// 		},
+	// 		{
+	// 			user_reply_id: 21,
+	// 			user_reply_name: '小狗',
+	// 			user_reply_content: '对于这个问题，我认为关键在于更全面地考虑各种因素。我们可以尝试从不同的角度来看待，以确保我们的讨论更加全面和深刻。',
+	// 			user_reply_avatar: 'https://cdn.uviewui.com/uview/template/niannian.jpg',
+	// 			user_reply_is_like: false,
+	// 			user_reply_like_num: 0,
+	// 			user_reply_date: '2023-06-01 19:00',
+	// 			to_user_name: '小猪',
+	// 			to_user_id: 20,
+	// 			pid: 3,
+	// 			user_isMyComment: true
+	// 		}
+	// 	]
+	// }
 ]);
+
+defineExpose({
+	getList
+});
+onMounted(() => {
+	getList();
+});
 </script>
 
 <style></style>

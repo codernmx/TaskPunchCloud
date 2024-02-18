@@ -117,7 +117,7 @@ function remove(data, callback) {
 }
 const getList = async () => {
 	console.log('56565');
-	const res = await uni.$u.http.post('/api/user/task_num', {
+	const res = await uni.$u.http.post('/api/api/user/comment', {
 		taskId: props.taskId
 	});
 	commentList.value.push({}, {}, {});

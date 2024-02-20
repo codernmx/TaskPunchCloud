@@ -189,7 +189,7 @@ const props = defineProps({
 })
 
 // 定义主题色
-const themeColor = ref('#1DBFB6')
+const themeColor = ref('#F24643')
 
 // 输入框的placeholde
 const placeholder = ref('请输入内容')

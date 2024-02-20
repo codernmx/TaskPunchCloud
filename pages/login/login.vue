@@ -153,6 +153,7 @@ const login = () => {
 		},
 		fail: (err) => {
 			console.log(err, 'err------------------>');
+			uni.$u.toast('登录失败');
 		},
 		complete() {
 			uni.hideLoading();

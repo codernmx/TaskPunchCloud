@@ -42,13 +42,12 @@
 				<u-divider text=""></u-divider>
 				<view class="text-bold">任务详情</view>
 				<view>{{ dataVal.info.detail }}</view>
-				
 			</view>
 
 			<!-- 评论区 -->
-			<Comment ref='commentRef' />
+			<Comment ref='commentRef' :task_id="dataVal.clockId"/>
 			<view class="d-flex justify-content-end pr-4">
-				<view class="size-24 comment-btn mt-1" @click="writeComment = true">写评论</view>
+				<view class="size-24 comment-btn mt-1" @click="writeComment = true" v-if="userStore.userInfo.isLeader === 1">写评论</view>
 			</view>
 			<view style="height: 60rpx"></view>
 			<!-- 写评论的弹窗 -->
@@ -56,7 +55,10 @@
 				<view class="p-2">
 					<u--textarea v-model="comment" placeholder="请输入评论内容" autoHeight :showConfirmBar="false" customStyle="min-height:200rpx"></u--textarea>
 					<!-- <view style="height: 100rpx;"></view> -->
-					<view class="d-flex justify-content-end"><up-button type="primary" :disabled="loading" @click="sendComment" shape="circle" text="发送" color="#F24643" size="mini" customStyle="width:150rpx;display:block;margin-top:30rpx"></up-button></view>
+					<view class="d-flex justify-content-end">
+						<!-- style="min-width: 120rpx;" -->
+						<view class="d-flex justify-content-end align-items-center mt-2"><up-button type="primary" :disabled="loading" @click="sendComment" shape="circle" text="发送" color="#F24643" size="mini" customStyle="width:150rpx;"></up-button></view>						
+					</view>
 					<view class="bottom-box" :style="{ height: `${bottomHeight}rpx` }"></view>
 				</view>
 			</u-popup>
@@ -89,7 +91,8 @@ const dataVal = reactive({
 		score: 0,
 		diffScore: 0
 	},
-	user: {}
+	user: {},
+	clockId:''
 });
 
 const toAddEdit = () => {
@@ -117,8 +120,16 @@ const getInfo = async (taskId) => {
 };
 const sendComment = async ()=>{
 	try {
+		if(!comment.value){
+			uni.$u.toast('请先输入内容');
+			return
+		}
 		loading.value = true
-		const res = await uni.$u.http.post('/api/user/task_detail', { });
+		const res = await uni.$u.http.post('/api/user/add_comment', {
+			task_id:dataVal.clockId,
+			user_content:comment.value,
+			user_id:uni.getStorageSync('userId')
+		});
 		loading.value = false
 		uni.$u.toast('留言成功');
 		writeComment.value = false
@@ -159,6 +170,7 @@ onReady(() => {
 	        })
 });
 onLoad((options) => {
+	dataVal.clockId = Number(options.clockId)
 	getInfo(Number(options.clockId));
 });
 </script>

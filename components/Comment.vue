@@ -33,11 +33,16 @@ const userInfo = ref({
  * @param data {index: number, j: number}  index 一级评论的索引 j 回复的索引
  * @param callback  调用点赞接口成功后，调用该方法更新点赞状态
  */
-function getLike(data, callback) {
+async function getLike(data, callback) {
 	// j 是给回复点赞，给一级评论点赞时，j 为undefined
 
 	console.log(data); // 输出：{index: 0，j: undefined}
-
+	console.log(commentList.value[data.index]);
+	const {id} = commentList.value[data.index]
+	const res = await uni.$u.http.post('/api/api/user/zan_comment', {
+		id,
+		userId:uni.getStorageSync('userId')
+	});
 	callback(); // 点赞成功后调用该方法 更新点赞状态
 }
 
@@ -111,17 +116,26 @@ function getMore(data, callback) {
 function remove(data, callback) {
 	// 调用删除接口
 	console.log(data);
-
 	// 调用删除接口成功后，调用 callback() 用于更新评论列表
 	callback();
 }
 const getList = async () => {
-	console.log('56565');
 	const res = await uni.$u.http.post('/api/api/user/comment', {
-		taskId: props.taskId
+		task_id: props.task_id
 	});
-	commentList.value.push({}, {}, {});
-	console.log(res, 'res');
+	commentList.value = res.data.list.map(item=>{
+		const zan_users = JSON.parse(item.zan_users) || []
+		console.log(zan_users)
+		const user_is_like = zan_users.some(item=>item === uni.getStorageSync('userId'))
+		return{
+			...item,
+			user_reply_list:[],
+			user_name:item.user.realName,
+			user_avatar:item.user.avatarUrl,
+			isLoading: false,
+			user_is_like,
+		}
+	})
 };
 /*
  * 列表数据
@@ -166,20 +180,20 @@ const commentList = ref([
 	// 		}
 	// 	]
 	// },
-	{
-		id: 2,
-		user_id: 2,
-		user_name: '张三丰',
-		user_date: '2021-01-25 13:58',
-		user_content: '你的看法让我重新思考了这个问题。我之前没有考虑到你提到的那一点，但现在我认为这是一个非常值得关注的方向。或许我们可以就这个展开更深入的交流。',
-		allReply: 0,
-		user_like_num: 11,
-		user_is_like: false,
-		user_avatar: 'https://cdn.uviewui.com/uview/template/niannian.jpg',
-		isLoading: false,
-		user_reply_list: [],
-		isMyComment: false
-	}
+	// {
+	// 	id: 2,
+	// 	user_id: 2,
+	// 	user_name: '张三丰',
+	// 	user_date: '2021-01-25 13:58',
+	// 	user_content: '你的看法让我重新思考了这个问题。我之前没有考虑到你提到的那一点，但现在我认为这是一个非常值得关注的方向。或许我们可以就这个展开更深入的交流。',
+	// 	allReply: 0,
+	// 	user_like_num: 11,
+	// 	user_is_like: false,
+	// 	user_avatar: 'https://cdn.uviewui.com/uview/template/niannian.jpg',
+	// 	isLoading: false,
+	// 	user_reply_list: [],
+	// 	isMyComment: false
+	// }
 	// {
 	// 	id: 3,
 	// 	user_id: 3,

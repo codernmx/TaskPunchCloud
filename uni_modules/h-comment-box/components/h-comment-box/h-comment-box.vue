@@ -17,8 +17,10 @@
                         <view class="num" :style="{ color: item.isLike ? themeColor : '#9a9a9a' }">{{ item.likeNum }}</view>
                         <u-icon v-if="!item.isLike" name="thumb-up" :size="30" color="#9a9a9a"
                             @click="getLike(index)"></u-icon>
+							<!-- 取消点赞  -->
+							<!-- @click="getLike(index)" -->
                         <u-icon v-if="item.isLike" name="thumb-up-fill" :color="themeColor" :size="30"
-                            @click="getLike(index)"></u-icon>
+                            ></u-icon>
                     </view>
                 </view>
 
@@ -113,7 +115,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref,watch } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 
 
@@ -260,38 +262,44 @@ defineExpose({
 // 评论列表 ==》 根据传入的commentList和传入的keyNames生成新的评论列表
 const commentList = ref([])
 
+watch(props, (newValue, oldValue) => {
+	console.log('chufa',newValue)
+	init()
+}, { deep: true })
 
+const init = ()=>{
+	commentList.value = props.list.map((item) => {
+	    return {
+	        id: item[props.keyNames.id],
+	        name: item[props.keyNames.user_name],
+	        url: item[props.keyNames.user_avatar],
+	        contentText: item[props.keyNames.user_content],
+	        date: item[props.keyNames.user_date],
+	        isLike: item[props.keyNames.user_is_like],
+	        likeNum: item[props.keyNames.user_like_num],
+	        isLoading: item[props.keyNames.isLoading],
+	        allReply: item[props.keyNames.allReply],
+	        isMyComment:item[props.keyNames.isMyComment],
+	        replyList: item[props.keyNames.user_reply_list].map((item_s) => {
+	            return {
+	                id: item_s[props.keyNames.user_reply_id],
+	                pid: item_s[props.keyNames.pid],
+	                name: item_s[props.keyNames.user_reply_name],
+	                url: item_s[props.keyNames.user_reply_avatar],
+	                contentStr: item_s[props.keyNames.user_reply_content],
+	                date: item_s[props.keyNames.user_reply_date],
+	                isLike: item_s[props.keyNames.user_reply_is_like],
+	                likeNum: item_s[props.keyNames.user_reply_like_num],
+	                to_user_name: item_s[props.keyNames.to_user_name],
+	                to_user_id: item_s[props.keyNames.to_user_id],
+	                user_isMyComment:item_s[props.keyNames.user_isMyComment],
+	            }
+	        })
+	    }
+	})
+}
 onLoad(() => {
-    commentList.value = props.list.map((item) => {
-        return {
-            id: item[props.keyNames.id],
-            name: item[props.keyNames.user_name],
-            url: item[props.keyNames.user_avatar],
-            contentText: item[props.keyNames.user_content],
-            date: item[props.keyNames.user_date],
-            isLike: item[props.keyNames.user_is_like],
-            likeNum: item[props.keyNames.user_like_num],
-            isLoading: item[props.keyNames.isLoading],
-            allReply: item[props.keyNames.allReply],
-            isMyComment:item[props.keyNames.isMyComment],
-            replyList: item[props.keyNames.user_reply_list].map((item_s) => {
-                return {
-                    id: item_s[props.keyNames.user_reply_id],
-                    pid: item_s[props.keyNames.pid],
-                    name: item_s[props.keyNames.user_reply_name],
-                    url: item_s[props.keyNames.user_reply_avatar],
-                    contentStr: item_s[props.keyNames.user_reply_content],
-                    date: item_s[props.keyNames.user_reply_date],
-                    isLike: item_s[props.keyNames.user_reply_is_like],
-                    likeNum: item_s[props.keyNames.user_reply_like_num],
-                    to_user_name: item_s[props.keyNames.to_user_name],
-                    to_user_id: item_s[props.keyNames.to_user_id],
-                    user_isMyComment:item_s[props.keyNames.user_isMyComment],
-                }
-            })
-        }
-    })
-    console.log(commentList.value, 'list');
+    init()
 })
 
 

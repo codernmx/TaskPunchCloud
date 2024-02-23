@@ -113,14 +113,18 @@ function getMore(data, callback) {
 /**
  * 删除评论
  */
-function remove(data, callback) {
+async function remove(data, callback) {
 	// 调用删除接口
-	console.log(data);
+	console.log(data.row.id);
+	const res = await uni.$u.http.post('/api/user/del_comment', {
+		id:data.row.id
+	});
+	uni.$u.toast('删除成功');
 	// 调用删除接口成功后，调用 callback() 用于更新评论列表
 	callback();
 }
 const getList = async () => {
-	const res = await uni.$u.http.post('/api/api/user/comment', {
+	const res = await uni.$u.http.post('/api/user/comment', {
 		task_id: props.task_id
 	});
 	commentList.value = res.data.list.map(item=>{
@@ -133,6 +137,7 @@ const getList = async () => {
 			user_name:item.user.realName,
 			user_avatar:item.user.avatarUrl,
 			isLoading: false,
+			isMyComment:item.user_id === uni.getStorageSync('userId'),
 			user_is_like,
 		}
 	})

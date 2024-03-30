@@ -125,20 +125,24 @@ const getOneImg = computed(() => (img) => {
 		</view>
 		<u-list @scrolltolower="scrolltolower">
 			<u-list-item v-for="(item, index) in dataVal.info.list" :key="index">
-				<view class="item-list">
+				<view class="item-list position-relative">
+					<image class="position-absolute flowers" src="../../static/f.png" style="width: 30rpx; height: 30rpx" v-if="item.comment > 0"></image>
 					<view class="top" @click="toDetail(item.clockId)">
 						<image :src="getOneImg(item.img)" style="width: 60px; height: 70px; margin-right: 10px" mode="aspectFill"></image>
 						<view style="width: calc(100% - 60px)">
 							<view class="title-1">{{ item.typeName }}</view>
 							<view class="title-2">{{ item.location }}</view>
 							<view class="title-2">打卡时间：{{ item.completeTime }}</view>
-							<view class="title-2">先锋值：<text>{{ item.score + item.diffScore }}</text></view>
+							<view class="title-2">
+								先锋值：
+								<text>{{ item.score + item.diffScore }}</text>
+							</view>
 						</view>
 					</view>
 					<view class="bottom size-26">
 						<view class="bottom-item">
-							<button class="share" open-type="share" style="background:none;border: none;padding: 0">
-								<view class="t-title d-flex align-items-center" >
+							<button class="share" open-type="share" style="background: none; border: none; padding: 0">
+								<view class="t-title d-flex align-items-center">
 									<u-icon name="share" size="20"></u-icon>
 									<!--{{ item.shareNum }}-->
 								</view>
@@ -241,6 +245,11 @@ button:after {
 		height: 256rpx;
 		border-radius: 20rpx;
 		background: #ffffff;
+
+		.flowers {
+			top: 30%;
+			right: 30rpx;
+		}
 		.top {
 			display: flex;
 			width: calc(100% - 40px);
